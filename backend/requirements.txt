@@ -1,0 +1,29 @@
+# JAL-SURAKSHA v3.0 - Simplified AI Stack
+# Autoencoder + Random Forest + SHAP
+
+# Core ML
+scikit-learn>=1.3.0
+tensorflow>=2.14.0
+
+# Explainable AI
+shap>=0.43.0
+
+# Data
+numpy>=1.24.0
+pandas>=2.0.0
+
+# Persistence
+joblib>=1.3.0
+
+# Web API
+fastapi>=0.104.0
+uvicorn>=0.24.0
+
+# FFT for leak detection
+scipy>=1.11.0
+
+# MQTT
+paho-mqtt>=1.6.0
+
+# Firebase
+firebase-admin>=6.2.0

@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "run_id": "run-mrkotcuu",
+  "created_at": "2026-07-14T13:28:57.173Z",
+  "updated_at": "2026-07-14T13:49:21.066Z",
+  "status": "completed",
+  "mode": "foreground",
+  "operating_mode": "continuous",
+  "goal": "Download and organize all real-world data for AGRI-GRID: AWD research papers, methane emission papers, India government reports, Agri Stack documentation, carbon credit market data, LoRa technical specs, agriculture statistics, and hackathon references. Store in documentation/ subfolder with metadata.",
+  "scope": "current repository",
+  "metric": {
+    "name": "doc_score",
+    "direction": "higher"
+  },
+  "verify": "python3 score_docs.py documentation",
+  "guard": "python3 guard_docs.py documentation",
+  "label_requirements": {
+    "keep": [],
+    "stop": []
+  },
+  "artifact_paths": {
+    "results": "/mnt/20265E15265DEC72/study/CODE/HACKATHON/temp/autoresearch-results.tsv",
+    "state": "/mnt/20265E15265DEC72/study/CODE/HACKATHON/temp/.autoresearch/state.json"
+  },
+  "stats": {
+    "total_iterations": 2,
+    "kept": 2,
+    "discarded": 0,
+    "needs_human": 0,
+    "consecutive_discards": 0,
+    "debug_depth": 0,
+    "branch_failures": {}
+  },
+  "flags": {
+    "stop_requested": false,
+    "needs_human": false,
+    "background_active": false,
+    "stop_ready": false
+  },
+  "subagent_pool": {
+    "kind": "autoresearch_subagent_pool",
+    "version": 1,
+    "pool_key": "autoresearch-pool-mrkotcuu-0",
+    "role_limit": 6,
+    "standing_pool": true,
+    "reuse_across_iterations": true,
+    "orchestrator_role_id": "orchestrator",
+    "state_owner": "orchestrator",
+    "fallback_mode": "serial",
+    "resource_tier": "full",
+    "recommended_active_role_ids": [
+      "orchestrator",
+      "scout",
+      "analyst",
+      "verifier",
+      "synthesizer"
+    ],
+    "activation": {
+      "during_setup": true,
+      "during_iterations": true,
+      "during_resume": true,
+      "reason": "Goal needs Research Tracker coverage."
+    },
+    "handoff_contract": [
+      "Only the orchestrator records iterations or mutates state.",
+      "Non-orchestrator roles return evidence and concise recommendations.",
+      "Keep the pool stable across iterations."
+    ],
+    "reanchor_checklist": [
+      "Restate the goal, scope, metric, and verify command before the next handoff.",
+      "Summarize the latest kept or discarded iteration before asking the pool for more work.",
+      "Reuse current role ownership unless drift or repeated discards force a reset."
+    ],
+    "goal": "Download and organize all real-world data for AGRI-GRID: AWD research papers, methane emission papers, India government reports, Agri Stack documentation, carbon credit market data, LoRa technical specs, agriculture statistics, and hackathon references. Store in documentation/ subfolder with metadata.",
+    "scope": "current repository",
+    "mode": "foreground",
+    "roles": [
+      {
+        "id": "orchestrator",
+        "name": "Orchestrator",
+        "focus": "Keep the goal, scope, and mode aligned; route work and merge results.",
+        "active_by_default": true,
+        "handoff_prompt": "You are the Orchestrator. Focus: Keep the goal, scope, and mode aligned; route work and merge results. Goal: Download and organize all real-world data for AGRI-GRID: AWD research papers, methane emission papers, India government reports, Agri Stack documentation, carbon credit market data, LoRa technical specs, agriculture statistics, and hackathon references. Store in documentation/ subfolder with metadata.. Scope: current repository. Mode: foreground. Do not mutate autoresearch state. Return evidence and one next-step recommendation."
+      },
+      {
+        "id": "scout",
+        "name": "Scout",
+        "focus": "Locate relevant files, docs, commands, and prior context in the repo.",
+        "active_by_default": true,
+        "handoff_prompt": "You are the Scout. Focus: Locate relevant files, docs, commands, and prior context in the repo. Goal: Download and organize all real-world data for AGRI-GRID: AWD research papers, methane emission papers, India government reports, Agri Stack documentation, carbon credit market data, LoRa technical specs, agriculture statistics, and hackathon references. Store in documentation/ subfolder with metadata.. Scope: current repository. Mode: foreground. Do not mutate autoresearch state. Return evidence and one next-step recommendation."
+      },
+      {
+        "id": "analyst",
+        "name": "Analyst",
+        "focus": "Turn evidence into options, tradeoffs, and a clear next-step recommendation.",
+        "active_by_default": true,
+        "handoff_prompt": "You are the Analyst. Focus: Turn evidence into options, tradeoffs, and a clear next-step recommendation. Goal: Download and organize all real-world data for AGRI-GRID: AWD research papers, methane emission papers, India government reports, Agri Stack documentation, carbon credit market data, LoRa technical specs, agriculture statistics, and hackathon references. Store in documentation/ subfolder with metadata.. Scope: current repository. Mode: foreground. Do not mutate autoresearch state. Return evidence and one next-step recommendation."
+      },
+      {
+        "id": "verifier",
+        "name": "Verifier",
+        "focus": "Check claims with commands, tests, or log reads before the pool settles.",
+        "active_by_default": true,
+        "handoff_prompt": "You are the Verifier. Focus: Check claims with commands, tests, or log reads before the pool settles. Goal: Download and organize all real-world data for AGRI-GRID: AWD research papers, methane emission papers, India government reports, Agri Stack documentation, carbon credit market data, LoRa technical specs, agriculture statistics, and hackathon references. Store in documentation/ subfolder with metadata.. Scope: current repository. Mode: foreground. Do not mutate autoresearch state. Return evidence and one next-step recommendation."
+      },
+      {
+        "id": "synthesizer",
+        "name": "Synthesizer",
+        "focus": "Condense the best evidence into a stable summary the orchestrator can reuse.",
+        "active_by_default": true,
+        "handoff_prompt": "You are the Synthesizer. Focus: Condense the best evidence into a stable summary the orchestrator can reuse. Goal: Download and organize all real-world data for AGRI-GRID: AWD research papers, methane emission papers, India government reports, Agri Stack documentation, carbon credit market data, LoRa technical specs, agriculture statistics, and hackathon references. Store in documentation/ subfolder with metadata.. Scope: current repository. Mode: foreground. Do not mutate autoresearch state. Return evidence and one next-step recommendation."
+      },
+      {
+        "id": "research_tracker",
+        "name": "Research Tracker",
+        "focus": "Collect background, comparisons, and scenario coverage for the loop.",
+        "active_by_default": false,
+        "handoff_prompt": "You are the Research Tracker. Focus: Collect background, comparisons, and scenario coverage for the loop. Goal: Download and organize all real-world data for AGRI-GRID: AWD research papers, methane emission papers, India government reports, Agri Stack documentation, carbon credit market data, LoRa technical specs, agriculture statistics, and hackathon references. Store in documentation/ subfolder with metadata.. Scope: current repository. Mode: foreground. Do not mutate autoresearch state. Return evidence and one next-step recommendation."
+      }
+    ],
+    "specialization": "research_tracker"
+  },
+  "continuation_policy": {
+    "approval_boundary": "pre_launch",
+    "post_launch_default": "continue",
+    "completion_requires_review": true,
+    "stop_conditions": [
+      "user_stop",
+      "configured_stop_condition",
+      "needs_human"
+    ]
+  },
+  "budget_exhausted": false,
+  "lineage": {
+    "id": "exp-run-mrkotcuu",
+    "parent_id": null,
+    "branch": "main",
+    "stage": "experiment",
+    "agent": "orchestrator"
+  },
+  "last_iteration": {
+    "iteration": 2,
+    "decision": "keep",
+    "scorer_status": "ok",
+    "metric_value": "100",
+    "change_summary": "Added 7 docs: IRRI India AWD, Punjab/Haryana trials, Gold Standard water credits, National Water Policy, Economic Survey, methane measurement methods",
+    "labels": [
+      "docs,research,data,enrichment"
+    ],
+    "timestamp": "2026-07-14T13:49:21.014Z",
+    "keep_labels_satisfied": true,
+    "stop_labels_satisfied": true,
+    "missing_keep_labels": [],
+    "missing_stop_labels": [],
+    "id": "run-mrkotcuu-iter-2",
+    "parent_id": "run-mrkotcuu-iter-1",
+    "branch": "main",
+    "stage": "improve",
+    "agent": "orchestrator"
+  },
+  "iteration_log": [
+    {
+      "iteration": 1,
+      "timestamp": "2026-07-14T13:43:17.471Z",
+      "stage": "improve",
+      "decision": "keep",
+      "metric_value": "100",
+      "change_summary": "51 docs across 8 categories: AWD(5), methane(5), govt(6), ag-stats(5), agri-stack(4), carbon(4), lora(7), hackathon(6)",
+      "labels": [
+        "docs,research,data"
+      ]
+    },
+    {
+      "iteration": 2,
+      "timestamp": "2026-07-14T13:49:21.014Z",
+      "stage": "improve",
+      "decision": "keep",
+      "metric_value": "100",
+      "change_summary": "Added 7 docs: IRRI India AWD, Punjab/Haryana trials, Gold Standard water credits, National Water Policy, Economic Survey, methane measurement methods",
+      "labels": [
+        "docs,research,data,enrichment"
+      ]
+    }
+  ]
+}
