@@ -10,7 +10,7 @@ import Hardware from './pages/Hardware.jsx';
 import Reports, { Settings } from './pages/Reports.jsx';
 function EvWrap(){ const { id } = useParams(); return <EvidenceDetail id={id}/>; }
 export default function App(){
-  return (<ModeProvider><BrowserRouter><Layout><Routes>
+  return (<ModeProvider><BrowserRouter basename={import.meta.env.BASE_URL}><Layout><Routes>
     <Route path="/" element={<Overview/>}/>
     <Route path="/fields" element={<Fields/>}/>
     <Route path="/fields/:id" element={<FieldDetail/>}/>
