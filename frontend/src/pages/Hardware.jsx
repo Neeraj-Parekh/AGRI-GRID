@@ -1,3 +1,4 @@
+import { FieldArt } from '../components/FieldArt.jsx';
 export default function Hardware(){
   return (<><h1 className="page-title">Hardware</h1><p className="page-sub">The physical AGRI-GRID node — not just software. <span className="badge b-proto">PROTOTYPE</span></p>
   <div className="hw-grid">
@@ -13,5 +14,5 @@ export default function Hardware(){
     <h4>Cost (3 nodes + 1 gateway)</h4><p>Heltec build <b>₹14,995</b> · Budget ESP32+Ra-02 <b>₹6,586</b></p>
     <h4>Edge AI</h4><p>IsolationForest on gateway — sudden drop, temp spike, dry-soil flags; inference &lt;100ms. <code className="inline">backend/anomaly_detector.py</code> exists (water-quality version — AGRI adapter in <code className="inline">backend/agri_api.py</code>).</p></div>
   </div>
-  <div className="card" style={{marginTop:14}}><h3>Field photos</h3><div style={{display:'flex',gap:10,flexWrap:'wrap'}}><img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=400&q=60&auto=format&fit=crop" alt="Paddy field" width="220" style={{borderRadius:10}} loading="lazy"/><img src="https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=400&q=60&auto=format&fit=crop" alt="Rice field" width="220" style={{borderRadius:10}} loading="lazy"/><img src="https://images.unsplash.com/photo-1560493676-04071c5f467b?w=400&q=60&auto=format&fit=crop" alt="Farm landscape" width="220" style={{borderRadius:10}} loading="lazy"/></div><p><small>Representative Unsplash field imagery (open licence). Replace with your real node photos — real hardware beats AI images. See ATTRIBUTION.md.</small></p></div></>);
+  <div className="card" style={{marginTop:14}}><h3>Field photos</h3><div style={{display:'flex',gap:10,flexWrap:'wrap'}}><div style={{flex:'1 1 220px'}}><FieldArt label="Paddy field — illustrative" variant={0}/></div><div style={{flex:'1 1 220px'}}><FieldArt label="Rice field — illustrative" variant={1}/></div><div style={{flex:'1 1 220px'}}><FieldArt label="Farm landscape — illustrative" variant={2}/></div></div><p><small>Offline illustrations (no external images). Replace with your real AGRI-GRID node photos — real hardware beats illustration. See ATTRIBUTION.md.</small></p></div></>);
 }

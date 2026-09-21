@@ -9,7 +9,7 @@ All website copy is original. Reference sites used for **ideas only — nothing 
 - geosat.space agriculture — VHR spec concepts (40cm / multispectral) paraphrased
 - arxiv Space2Ground 2.0 (Sentinel-1/2 + Mapillary, CC-BY-4.0) — fusion-method reference; if figures reused, attribute + link DOI/Zenodo
 
-Imagery: Unsplash open-licence field photos (paddy/rice/farm). **Replace with your real AGRI-GRID node photos before judging** — real hardware beats stock.
+Imagery: offline SVG field illustrations (no external requests). **Replace with your real AGRI-GRID node photos before judging** — real hardware beats illustration.
 
 Map tiles: © OpenStreetMap contributors / © Esri World Imagery (attributed in-app).
 

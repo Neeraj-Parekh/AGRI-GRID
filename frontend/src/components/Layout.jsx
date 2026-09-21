@@ -42,7 +42,7 @@ export default function Layout({ children }){
           </div>
         </div>
         {live ? (
-          <div className="live-banner">LIVE MODE {liveStatus==='connected'?'— connected to AGRI-GRID API (real backend).':liveStatus==='fallback'?'— backend unreachable, showing deterministic demo fallback (SIMULATED).':'— checking backend…'} <button className="btn ghost" style={{marginLeft:12,padding:'4px 10px'}} onClick={()=>setMode('demo')}>Switch to Demo</button></div>
+          <div className="live-banner">LIVE MODE — reading local AGRI-GRID API prototype store {liveStatus==='connected'?'(connected). POST node packets to /agri/ingest to feed the dashboard.':liveStatus==='fallback'?'(backend unreachable — showing demo fallback, SIMULATED).':'(checking backend…)'} <button className="btn ghost" style={{marginLeft:12,padding:'4px 10px'}} onClick={()=>setMode('demo')}>Switch to Demo</button></div>
         ) : (
           <div className="demo-banner"><b>DEMO MODE</b> — deterministic simulated data (seed 42). No live farm deployment claimed. <span className="badge b-sim">SIMULATED</span></div>
         )}

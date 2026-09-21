@@ -95,4 +95,20 @@ table.tbl{width:100%;border-collapse:collapse;font-size:13.5px}
 code.inline{background:#EEF1EC;padding:2px 7px;border-radius:6px;font-size:12.5px}
 pre.code{background:var(--forest);color:#D9EBDD;padding:14px;border-radius:12px;overflow:auto;font-size:12.5px}
 @media(max-width:1080px){.grid-kpi{grid-template-columns:1fr 1fr}.layout-2,.layout-3,.hw-grid,.evi-grid{grid-template-columns:1fr}.sidebar{display:none}.page-title{font-size:26px}}
+@media(max-width:640px){
+  .content{padding:14px}
+  .grid-kpi{grid-template-columns:1fr}
+  .kpi b{font-size:22px}
+  .tele3{grid-template-columns:1fr}
+  .topbar{gap:10px;padding:10px 12px;flex-wrap:wrap}
+  .topbar nav{display:flex;gap:12px;overflow-x:auto;max-width:100%;padding-bottom:4px}
+  .topbar nav a{white-space:nowrap}
+  .userchip div:last-child{display:none}
+  .map-wrap{height:300px}
+  .map-tools{flex-wrap:wrap}
+  .legend{font-size:11px;padding:8px 10px}
+  .tbl{display:block;overflow-x:auto;white-space:nowrap}
+  .page-title{font-size:23px}
+  .kv{font-size:12.5px}
+}
 :focus-visible{outline:3px solid var(--soft);outline-offset:2px}

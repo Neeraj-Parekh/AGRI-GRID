@@ -8,8 +8,8 @@ export default function Reports(){
   return (<><h1 className="page-title">Reports</h1><p className="page-sub">Prototype field evidence report. <span className="badge b-proto">DEMO EVIDENCE REPORT</span></p>
   <div className="card"><h3>Field Evidence Summary — AGRI-001 (Paddy, 2.4 ha)</h3>
   <p><b>Current field state:</b> Watch — Zone B2 rapid drying, health 82%.</p>
-  <p><b>Water history:</b> 24h avg 6.2→5.2 cm; B2 6.4→2.4 cm (4 cm / 30 min anomaly 12:32).</p>
-  <p><b>AWD status:</b> Cycle 3 Day 12, Drying — on track except B2.</p>
+  <p><b>Water history:</b> 24h avg 6.2→5.2 cm; B2 6.4→2.4 cm (4 cm / 30 min ≈190× normal AWD drawdown — likely leak/breach, 12:32).</p>
+  <p><b>AWD status:</b> Cycle 3 Day 12, Drying — on track except B2. Demo timeline is illustrative; field AWD per IRRI re-irrigates at −15 cm tube reading.</p>
   <p><b>Anomalies:</b> {ALERTS.length} open (1 crit, 2 watch/info).</p>
   <p><b>Evidence:</b> {EVIDENCE.length} records, 2 consistent / 1 discrepancy-review.</p>
   <p><b>Confidence:</b> 86% consistent case, 41% discrepancy case (SIMULATED).</p>

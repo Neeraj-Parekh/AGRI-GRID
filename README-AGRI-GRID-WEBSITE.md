@@ -16,7 +16,17 @@ Live Mode: header toggle → fetches `VITE_AGRI_API` (default `http://localhost:
 ## Backend (new AGRI adapter; old JAL files untouched)
 ```
 /mnt/.../linux_venv/bin/python -m uvicorn agri_api:app --port 8001 --host 127.0.0.1
-# GET /agri/fields /agri/fields/AGRI-001 /agri/alerts /agri/evidence POST /agri/ingest
+# GET /agri/fields /agri/fields/AGRI-001 /agri/nodes /agri/telemetry?fieldId=AGRI-001&nodeId=B2 /agri/alerts /agri/evidence
+```
+
+## Node-to-dashboard chain (pour-water video — film against this, not Demo Mode)
+```
+# 1. Start the API, then post a packet as the gateway would:
+curl -X POST http://127.0.0.1:8001/agri/ingest -H 'Content-Type: application/json' \
+  -d '{"fieldId":"AGRI-001","nodeId":"B2","water":1.1,"moisture":38,"temp":30.4,"batt":75,"rssi":-79}'
+# 2. Verify it stored: curl http://127.0.0.1:8001/agri/nodes  (B2 now shows 1.1 cm, status alert)
+# 3. Open the site, toggle Live → Overview/Fields/FieldDetail show the posted values with LIVE badges.
+# Store is in-memory (resets on restart); SAR/weather stay SIMULATED.
 ```
 
 ## Demo path (2 min)

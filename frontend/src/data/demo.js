@@ -38,7 +38,7 @@ export const TELEMETRY = {
 };
 
 export const ALERTS = [
-  { id:'AL-101', sev:'crit', title:'Low water level detected', field:'AGRI-001', node:'Node B2', ago:'2 hours ago', why:'Water dropped 4.0 cm in 30 min — rate 8x normal AWD drying. Check bund leak or drain.', time:'15 Sep 2026, 12:32' },
+  { id:'AL-101', sev:'crit', title:'Low water level detected', field:'AGRI-001', node:'Node B2', ago:'2 hours ago', why:'Water dropped 4.0 cm in 30 min — rate ≈190× normal AWD drawdown (~1 cm/day, IRRI). Pattern indicates likely bund leak/breach, not normal drying — inspect immediately.', time:'15 Sep 2026, 12:32' },
   { id:'AL-102', sev:'warn', title:'Unusual drying pattern', field:'AGRI-003', node:'Zone C1', ago:'5 hours ago', why:'Zone C1 drying faster than neighbours B1/B3. Possible uneven levelling.', time:'15 Sep 2026, 09:15' },
   { id:'AL-103', sev:'info', title:'High temperature', field:'AGRI-002', node:'Node A1', ago:'1 day ago', why:'31.4°C spike at noon, recovered. No irrigation action needed.', time:'14 Sep 2026, 13:00' },
   { id:'AL-104', sev:'warn', title:'Sensor communication gap', field:'AGRI-006', node:'Node D2', ago:'3 hours ago', why:'No packets 45 min. Likely LoRa RSSI dip (-89 dBm). Gateway retry scheduled.', time:'15 Sep 2026, 11:20' },
@@ -53,7 +53,21 @@ export const EVIDENCE = [
 export const INTEL = {
   detect:[{ zone:'B2', text:'Water level dropped 4 cm in 30 min.', score:0.92, time:'12:32', src:'Node B2 + neighbours B1/B3/B4' }],
   infer:[{ text:'Zones B2–B4 show accelerated drying relative to neighbouring zones.', area:'0.6 ha', conf:78 }],
-  predict:[{ title:'Irrigation requirement estimate (PROTOTYPE)', text:'At current drying rate B2 reaches AWD stress threshold (~0 cm) in ~14 h. Suggested inspection before Day-13 irrigation.', conf:64 }],
+  predict:[{ title:'Irrigation requirement estimate (PROTOTYPE)', text:'At current drying rate the demo 0 cm ponded mark is reached in ~14 h — field rule per IRRI is re-irrigation at −15 cm tube reading, so treat the demo mark as illustrative. Suggested inspection before Day-13 irrigation.', conf:64 }],
 };
 
-export const KPIS = { normalPct:78, attention:2, awd:'6 / 8', nodes:48 };
+// KPIs are always computed from the field list (getKpis) so headlines can't drift from data.
+export function getKpis(fields){
+  const total = fields.length;
+  const normal = fields.filter(f=>f.state==='normal').length;
+  const attention = total - normal;
+  const awdFields = fields.filter(f=>f.awd && f.awd!=='N/A');
+  const awdOk = awdFields.filter(f=>f.state!=='alert').length;
+  return {
+    normalPct: Math.round(normal/total*100),
+    attention,
+    awd: `${awdOk} / ${awdFields.length}`,
+    nodes: fields.reduce((s,f)=>s+(f.nodes||0),0),
+    total,
+  };
+}
