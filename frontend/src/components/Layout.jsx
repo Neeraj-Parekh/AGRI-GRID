@@ -1,11 +1,10 @@
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { LayoutDashboard, Map as MapIcon, Brain, FileCheck, Cpu, FileText, Settings, HelpCircle, Bell } from 'lucide-react';
 import { useMode } from '../context/ModeContext.jsx';
 import { CLUSTER } from '../data/demo.js';
 
 export default function Layout({ children }){
   const { mode, setMode, liveStatus } = useMode();
-  const nav = useNavigate();
   const live = mode==='live';
   return (
     <div className="app">

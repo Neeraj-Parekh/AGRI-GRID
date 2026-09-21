@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Droplet, AlertTriangle, Leaf, Database } from 'lucide-react';
 import FieldMap from '../components/FieldMap.jsx';
-import { Spark, WaterChart } from '../components/Charts.jsx';
+import { Spark } from '../components/Charts.jsx';
 import { CLUSTER, FIELDS, ALERTS, TELEMETRY, KPIS } from '../data/demo.js';
 
 function Kpi({ icon, bg, value, label, delta, bad }){
