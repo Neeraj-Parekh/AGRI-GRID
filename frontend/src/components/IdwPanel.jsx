@@ -16,7 +16,7 @@ export default function IdwPanel({ poly, nodes, height=150 }){
     const cw = W/46+1, ch = H/46+1;
     for(const s of samples){ ctx.fillStyle = waterColor(s.value,0.92); ctx.fillRect(X(s.lng)-cw/2, Y(s.lat)-ch/2, cw, ch); }
     ctx.strokeStyle = '#fff'; ctx.lineWidth = 3; ctx.beginPath();
-    poly.forEach(([la,ln],i)=>{ const x=X(ln),y=Y(la); i?ctx.lineTo(x,y):ctx.moveTo(x,y); });
+    poly.forEach(([la,ln],i)=>{ const x=X(ln),y=Y(la); if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); });
     ctx.closePath(); ctx.stroke();
     for(const n of nodes){
       ctx.beginPath(); ctx.arc(X(n.lng),Y(n.lat),8,0,7);

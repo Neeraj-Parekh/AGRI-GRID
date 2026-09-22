@@ -1,7 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { LayoutDashboard, Map as MapIcon, Brain, FileCheck, Cpu, FileText, Settings, HelpCircle, Bell } from 'lucide-react';
 import { useMode } from '../context/ModeContext.jsx';
-import { CLUSTER } from '../data/demo.js';
 
 export default function Layout({ children }){
   const { mode, setMode, liveStatus } = useMode();
@@ -9,13 +8,14 @@ export default function Layout({ children }){
   return (
     <div className="app">
       <aside className="sidebar" aria-label="Primary">
-        <div className="brand"><div className="brand-mark">AG</div><div><b>AGRI-GRID</b><small>From sensor points to a living digital field.</small></div></div>
-        <div className="cluster"><div>📍 {CLUSTER.name}</div><small>{CLUSTER.location}</small></div>
+        <div className="brand"><div className="brand-mark">AG</div><div><b>AGRI-GRID</b><small>From sensor points to a living digital field</small></div></div>
+        <div className="cluster"><b>PUNE PILOT CLUSTER</b><small>Pune, Maharashtra · Paddy · Kharif 2026</small></div>
         <nav className="nav">
           <NavLink to="/" className={({isActive})=>isActive?'active':''}><LayoutDashboard size={17}/> Overview</NavLink>
           <NavLink to="/fields" className={({isActive})=>isActive?'active':''}><MapIcon size={17}/> Fields</NavLink>
           <NavLink to="/intelligence" className={({isActive})=>isActive?'active':''}><Brain size={17}/> Intelligence</NavLink>
           <NavLink to="/evidence" className={({isActive})=>isActive?'active':''}><FileCheck size={17}/> Evidence</NavLink>
+          <div className="nav-sep"/>
           <NavLink to="/hardware" className={({isActive})=>isActive?'active':''}><Cpu size={17}/> Hardware</NavLink>
           <NavLink to="/reports" className={({isActive})=>isActive?'active':''}><FileText size={17}/> Reports</NavLink>
           <NavLink to="/settings" className={({isActive})=>isActive?'active':''}><Settings size={17}/> Settings</NavLink>
