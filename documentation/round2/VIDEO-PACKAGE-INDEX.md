@@ -90,7 +90,7 @@ box: there isn't one yet.
 | Concept note | `AGRI-GRID-CONCEPT-NOTE.md` | short framing text |
 | Build plan / research | `AGRI-GRID-BUILD-PLAN.md`, `documentation/round2/*` | long-form backing |
 | Deck prompt | `AGRI-GRID-PPT-PROMPT.md` | a prompt for a deck, **not a deck** |
-| Deck | — | **text layer missing**: no AGRI-GRID .pptx in the repo; twelve visual backgrounds are in `documentation/round2/assets/deck-visuals/` |
+| Deck | `documentation/round2/assets/round1-deck/` | **found**: 18-slide UTKARSH 1.0 PPTX, PDF and slide JPEGs; ₹14,995 cost card on slide 14 |
 | One-page site mock | `claude/AGRI-GRID V2 Field Station (1).html` | static single-page mock |
 | Build sheet | `claude/AGRI_GRID_Prototype_Build_Sheet (5).pdf` | wiring, pin map, probe geometry, 10 pages |
 | Build-sheet source | `documentation/round2/assets/prototype-circuits/` | `diagrams.py` + PNG/SVG of probe, field, hero, perfboard, gateway, system |
@@ -100,14 +100,15 @@ box: there isn't one yet.
 | Transcript asset map | `documentation/round2/V2-TRANSCRIPT-ASSET-MAP.md` | 43 named assets: 21 present, 22 missing, pull order |
 | Manufacturer resources | `documentation/round2/assets/v2-manufacturer-resources.zip` | Fibox/ESP32/EBYTE/Genasun/DFRobot source CAD and datasheets |
 | Probe scene contact sheet | `websites/2026-11-08-probe-explorer/review/probe/probe-scenes-preview.jpg` | 1990 × 1604 sheet of the probe chapters, for shot selection |
-| Deck visuals, 12 backgrounds | `documentation/round2/assets/deck-visuals/` | 1672 × 941 AI editorial visuals, **not photographs**; text layer still missing |
+| Deck visuals, 12 backgrounds | `documentation/round2/assets/deck-visuals/` | 1672 × 941 AI editorial visuals, **not photographs**; later redesign, not the 18-slide deck |
 | Probe stills, 1080p | `documentation/round2/assets/probe-stills/` | twenty-one paused frames; twelve match script timestamps, reproducible links in its README |
 
 ## 5. Missing before the edit
 
 1. A screen recording in Live Mode (the sites are running locally; GitHub Pages is the older
    public build, so record from `localhost:5173` and say it is the local build).
-2. A decision on the deck: build it from `AGRI-GRID-PPT-PROMPT.md`, or film the HTML mock.
+2. A decision on whether the `[DECK sNN]` slides use the recovered UTKARSH deck
+   (`assets/round1-deck/`) or the later editorial backgrounds (`assets/deck-visuals/`).
 3. One clean audio take of the 90-second narration (script can come from beats 1-6 above).
 4. A shot of the real parts laid out (ESP32, cells, modules, perfboard) — that is a phone
    photo, not CAD.

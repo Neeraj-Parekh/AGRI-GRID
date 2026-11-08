@@ -24,6 +24,7 @@ add all text in the edit or in the deck tool.
 | `11_slide_11_differentiation_visual.jpg` | differentiation panels | spare |
 | `12_slide_12_vision_visual.jpg` | closing vision | spare |
 
-The script's `[DECK sNN]` tags refer to the Round 1 deck, whose text layer is not in this repo.
-These are the visual layer only. Do not read a number off them; the numbers are in the script's
-fact sheet.
+The script's `[DECK sNN]` tags refer to the Round 1 deck. Its text layer is now in
+`../round1-deck/` (18 slides, including the ₹14,995 cost card on slide 14). These twelve
+backgrounds are a later editorial redesign, not the deck's own slides. Do not read a number off
+them; the numbers are in the script's fact sheet and the round1-deck slides.

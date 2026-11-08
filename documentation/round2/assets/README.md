@@ -83,6 +83,14 @@ exact timestamps the 7:35 script asks for; the rest cover chapters 1, 2, 3, 5, 7
 of the image and are meant to stay on screen. `ch10` still uses the labelled synthetic SAR pass;
 the 7:35 script does not use it.
 
+## `round1-deck/`
+
+The recovered Round 1 submission deck, UTKARSH 1.0, 18 slides. `AGRI-GRID-UTKARSH-deck.pptx`
+is the newer 13 Jul save; `AGRI-GRID-UTKARSH-deck.pdf` is the 12 Jul render; `slides/` holds
+1600 px JPEGs of all 18 pages. Slide 14 is the **₹14,995** cost breakdown that the script's
+"about fifteen thousand rupees" line refers to. This is the July prototype BOM (Heltec boards,
+JSN-SR04T, IP65 boxes), not the V2 station. See its README for the slide map.
+
 ## `deck-visuals/`
 
 Twelve 16:9 editorial backgrounds copied from the Round 1 deck assets, 1672 × 941 JPEGs. They

@@ -44,7 +44,7 @@ Headful Chrome on the laptop GPU renders the 1920 × 1080 frame with no console 
 | 0:25 | PX ch1 t=10–18 | `/probe?record=1&ch=1` | RECORD |
 | 0:38 | DECK s02 right half, or PX ch18 t=2–5 | `deck-visuals/02_slide_02_problem_visual.jpg` (no text); `ch=18` | READY background / RECORD |
 | 0:50 | PX ch1 t=19–24 | `ch=1` · still `probe-ch01-rule.jpg` | RECORD / READY still |
-| 0:57 | DECK s03 | `deck-visuals/03_slide_03_gap_visual.jpg` | READY background |
+| 0:57 | DECK s03 | `deck-visuals/03_slide_03_gap_visual.jpg` background, or `round1-deck/slides/slide-03.jpg` (exact Point · Manual · Unverified slide) | READY |
 
 ## Beat 3 · The idea · 1:15–1:45
 
@@ -123,7 +123,7 @@ empty prototype and would overclaim.
 | Time | Visual tag | Local source | Status |
 |---|---|---|---|
 | 6:45 | PX ch18 t=7–12 | `ch=18&costs=0` · still `probe-ch18-ipcc.jpg` | RECORD / READY still |
-| 6:57 | DECK s05 cost card only | `deck-visuals/05_slide_05_ground_hardware_visual.jpg` background; **the ≈₹15,000 figure is an estimate, not a line in any repo BOM** | GAP: verify against the build BOM |
+| 6:57 | DECK s05 cost card only | `round1-deck/slides/slide-14.jpg` — **₹14,995 verified**, 3 nodes + gateway, July prototype BOM; background `deck-visuals/05_slide_05_ground_hardware_visual.jpg` optional | READY |
 | 7:03 | DECK s09 flow, then s10 crops | `deck-visuals/09_slide_09_business_model_visual.jpg`, `10_slide_10_scale_visual.jpg` | READY backgrounds |
 
 ## Beat 11 · Close · 7:20–7:35
@@ -131,24 +131,23 @@ empty prototype and would overclaim.
 | Time | Visual tag | Local source | Status |
 |---|---|---|---|
 | 7:20 | FACE, straight to camera | you | USER |
-| 7:30 | DECK s01 title slide | `deck-visuals/01_slide_01_title_visual.jpg` + credit text | READY background + MAKE |
+| 7:30 | DECK s01 title slide | `round1-deck/slides/slide-01.jpg` (replace the `TEAM [TBD]` footer with the credit), or `deck-visuals/01_slide_01_title_visual.jpg` + credit text | READY + overlay |
 
 ## What is still missing
 
-1. **Hardware video and face cam** — only on your phone/disk. Trim to the four hardware shots
-   and three face takes listed in the script.
+1. **Hardware video** — not on this machine. The face-cam gap is partly covered: eight
+   1920 × 1080 takes from 16 Oct are in `~/Videos/Camera/` (mono audio, generic talking-head;
+   check whether they match the hook, bench line and close before using them). The gateway
+   box shots still need your phone/disk footage.
 2. **SAR input / prediction / ground-truth chips and the metrics card** — no U-Net output image
-   exists in the repo. Export three same-size chips from the model run and state the test-chip
-   count next to mIoU 0.38.
-3. **The Round 1 deck text layer** — the twelve editorial backgrounds are in
-   `assets/deck-visuals/`, but the `.pptx` itself is not in the repo. Pull the deck if the
-   `[DECK sNN]` slides are to appear as slides rather than as backgrounds.
-4. **The ≈₹15,000 cost line** — the V2 BOM CSV lists parts but no prices, and no note in the repo
-   totals three nodes plus a gateway. The script says "about fifteen thousand rupees", which is
-   a defensible round estimate only if you can stand behind it; check it against the purchase
-   records before saying the number.
-5. **Text and diagram cards** — the Beat 3 diagram, the Beat 9 honesty card, the metric card and
-   the `LIVE` / `DEMO` / `CAD` / `AI visual` / `NOT YET BUILT` labels are edit work.
+   exists in the repo. The 0.3817 mIoU is documented in `AUDIT-BACKEND-SAR.md` and
+   `LOGIC-NARRATIVE.md` but the model tree is external. Export three same-size chips from the
+   model run and state the test-chip count next to mIoU 0.38. Do not substitute the terrain
+   paper's 0.524 figures or its chips.
+3. **Text and diagram cards** — the Beat 3 diagram, the Beat 9 honesty card, the metric card and
+   the `LIVE` / `DEMO` / `CAD` / `AI visual` / `NOT YET BUILT` labels are edit work. The Round 1
+   deck text layer is now present in `assets/round1-deck/`, so the `[DECK sNN]` slides no longer
+   block the edit.
 
 **Not missing:** `surat.jpg` is not needed. This script does not use chapter 16, the only
 chapter that reads it. Chapter 10 (SAR pass) is also unused; the script's space beat uses the
