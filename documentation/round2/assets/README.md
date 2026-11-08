@@ -52,6 +52,28 @@ The assembly is a **concept model**: component envelopes are datasheet-derived w
 datasheet existed, and the package README records the open items (battery SKU, solar panel
 SKU, ESP32 variant). It has not been printed or built. Do not present it as a tested station.
 
+## `v2-manufacturer-resources.zip`
+
+The **official manufacturer resource archive** named in the Claude transcript, 18.3 MB,
+pulled from the CloudFront link on 2026-11-08 and integrity-checked (`unzip -t` clean).
+
+```
+00_README/                  source manifest, SHA256SUMS, component source register
+01_Enclosure_Fibox/         MNX PC 200/150 HG STEP, DXF, datasheet, certificate
+02_Controller_Espressif/    ESP32-DevKitC V4 dimension DXF/PDF, schematic, PCB layout
+03_Radio_EBYTE/             E22-900M22S manual and footprint archives
+04_Power_Genasun_Battery/   GV-5 charger data, battery candidate envelope
+05_Sensors_DFRobot/         SEN0602, SEN0311/A02YYUW sheets
+06_Solar_WAAREE/            panel data (plus the unresolved size conflict)
+07_Reference_Links/         saved supplier pages
+08_Regulators_Pololu/       D24V50F5 and D24V22Fx STEP/dimension data
+09_RS485_DFRobot_DFR0845/   isolated RS485-to-UART drawing, schematic, datasheet
+```
+
+Use this pack only to substantiate a CAD claim on camera. Its `00_README/README.txt`
+records the design holds: the WAAREE panel has two incompatible size listings, the EBYTE
+module is solder-down, and the Fibox IP rating does not survive drilling for glands.
+
 ## Provenance
 
 | Pack | From | sha256 (archive) |

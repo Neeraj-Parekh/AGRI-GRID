@@ -56,7 +56,7 @@ calls the set "five sheets" but names seven image files; all seven are listed se
 | `AGRI_GRID_V2_Local_Agent_Handoff_v0.5.md` | Prior agent handoff note named in the brief. | No repo copy. No file named `*Handoff*` was found. | MISSING |
 | `AGRI_GRID_V2_Round2_Implementation_Pack.zip` | Prior round-2 implementation archive named in the brief. | No repo copy. Not inside the two repo audit zips either. | MISSING |
 | `AGRI_GRID_V2_R2_Reference_Assembly_Deployed.step` | Prior deployed reference assembly named in the brief. | No repo copy. Nearest model: `documentation/round2/cad/master_v5/AGRI-GRID-V2-MASTER.step` (2,882,642 B, md5 `de1f75f1706b88d1c6694a6eed826943`), but that is the repo's own master, not the named R2 file. | MISSING |
-| `AGRI_GRID_V2_Official_CAD_Datasheets_Final_20261016.zip` | Manufacturer CAD/datasheet archive named in the brief, with a CloudFront download URL. | No repo copy. The URL in transcript line 146 still returns HTTP 200: 18,271,018 B, Last-Modified 2026-10-16 18:23:49. It was not downloaded for this audit. | MISSING |
+| `AGRI_GRID_V2_Official_CAD_Datasheets_Final_20261016.zip` | Manufacturer CAD/datasheet archive named in the brief, with a CloudFront download URL. Its internal root is `AGRI_GRID_V2_Official_Manufacturer_Resources/`. | `documentation/round2/assets/v2-manufacturer-resources.zip` (18,271,018 B, sha256 `d4dfb903196ccd5baa6d4afed61e489e073b9248d6e6eb57067351038b4c2ca7`), pulled from the transcript URL on 2026-11-08 and `unzip -t` clean. | PRESENT |
 | `AGRI_GRID_V2_FreeCAD_Engineering/` (00_References ... 09_Final_Deliverables) | Prescribed working directory tree for the CAD job. | No such directory exists. The delivered package is flat under `documentation/round2/assets/v2-freecad-package/`. | MISSING |
 
 ### B. V2 station CAD package (Claude's main output)
@@ -109,9 +109,9 @@ the circuits and the probe website. They are not the V2 station CAD.
 
 | Status | Count |
 |---|---:|
-| PRESENT | 20 |
+| PRESENT | 21 |
 | IN ZIP | 0 |
-| MISSING | 23 |
+| MISSING | 22 |
 | **Total named assets** | **43** |
 
 Duplicates are counted once under PRESENT. No V2-package or circuits-zip member is zip-only:
@@ -138,10 +138,10 @@ audit and is now PRESENT.
 4. **`AGRI_GRID_V2_BOM.xlsx` (missing, low-medium).** The 55-line CSV is complete and readable.
    Generate an XLSX only if a spreadsheet is going on screen; otherwise the CSV or a styled
    table is enough.
-5. **`AGRI_GRID_V2_Official_CAD_Datasheets_Final_20261016.zip` (missing, medium for claims,
-   low for pictures).** The URL is still live at 18.3 MB. Pull it if you need to substantiate
-   "manufacturer CAD" on camera; the package README's source links are enough for a CAD
-   concept beat.
+5. **`AGRI_GRID_V2_Official_CAD_Datasheets_Final_20261016.zip` (done).** Pulled on 2026-11-08
+   and kept as `documentation/round2/assets/v2-manufacturer-resources.zip`. It holds the Fibox
+   STEP/DXF, ESP32 DevKitC dimension drawings, EBYTE manual and footprints, Genasun and Pololu
+   data, and the DFRobot sensor sheets, plus a source manifest and design-hold README.
 6. **The seven reference images (missing, low for video, high for reconciliation).** Only worth
    recovering if you plan a "reference vs CAD" side-by-side. The reconciliation Markdown
    already records what each sheet showed and where it was wrong.

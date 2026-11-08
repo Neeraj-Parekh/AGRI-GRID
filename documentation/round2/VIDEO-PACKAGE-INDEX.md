@@ -93,7 +93,8 @@ box: there isn't one yet.
 | Perfboard layout | `claude/perfboard (5).png` / `documentation/round2/assets/prototype-circuits/png/perfboard.png` | 70 × 90 board layout |
 | Hero diagram | `claude/hero (5).png` / `documentation/round2/assets/prototype-circuits/png/hero.png` | probe + station hero art |
 | V2 design transcript | `documentation/round2/ClaudeAGRI_GRID_V2_transcript.txt` | the Claude CAD conversation, for provenance |
-| Transcript asset map | `documentation/round2/V2-TRANSCRIPT-ASSET-MAP.md` | 43 named assets: 20 present, 23 missing, pull order |
+| Transcript asset map | `documentation/round2/V2-TRANSCRIPT-ASSET-MAP.md` | 43 named assets: 21 present, 22 missing, pull order |
+| Manufacturer resources | `documentation/round2/assets/v2-manufacturer-resources.zip` | Fibox/ESP32/EBYTE/Genasun/DFRobot source CAD and datasheets |
 | Probe scene contact sheet | `websites/2026-11-08-probe-explorer/review/probe/probe-scenes-preview.jpg` | 1990 × 1604 sheet of the probe chapters, for shot selection |
 
 ## 5. Missing before the edit
