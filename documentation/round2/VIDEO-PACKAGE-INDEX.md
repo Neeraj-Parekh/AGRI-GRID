@@ -38,6 +38,7 @@ provenance and Vercel settings; `agri-sites/start-all.sh` starts all four server
 | Run guide + demo path | `README-AGRI-GRID-WEBSITE.md` | 2-minute walkthrough and the curl ingest for a live badge |
 | GitHub Pages (older) | https://Neeraj-Parekh.github.io/AGRI-GRID/ | built from commit `15b3840`, 2 Nov; behind the local builds |
 | Recorded screenshots | `agri-sites/screenshots/` | landing, AGRI-GRID home, dashboard, Yenprotek |
+| Vercel deployment | `documentation/round2/DEPLOY-VERCEL.md` | root directory, token commands, fallback behaviour |
 
 Routes worth filming: `/` story home, `/dashboard`, `/fields`, `/fields/AGRI-001`,
 `/intelligence` (detect / infer / predict), `/evidence` (two records, one consistent and one
