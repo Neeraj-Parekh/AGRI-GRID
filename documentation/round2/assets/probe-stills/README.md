@@ -1,13 +1,13 @@
 # Probe Explorer stills (1920 × 1080)
 
-Twenty-one paused frames captured from the live Probe Explorer at
+Twenty-three paused frames captured from the live Probe Explorer at
 `http://localhost:5173/probe?record=1&…&paused=1`, rendered by Chrome on the laptop GPU
 (not SwiftShader). Each frame is a pure function of the timeline, so the same link reproduces
 the same picture.
 
-The first nine are general chapter frames. The second group was captured at the exact timestamps
-the 7:35 Round 2 script asks for, so each one can stand in for a clip or be used as the poster
-frame for a take.
+Nine are general chapter frames. Fourteen were captured at the exact timestamps the 7:35
+Round 2 script asks for, so each one can stand in for a clip or be used as the poster frame
+for a take.
 
 ## Script frames (captured to match `VIDEO-SCRIPT.md`)
 
@@ -19,11 +19,13 @@ frame for a take.
 | `probe-ch03-wiring.jpg` | 3 Print and build | 2:04 extra, wires along the ribs | `ch=3&t=21` |
 | `probe-ch04-wall.jpg` | 4 Why nothing corrodes | 2:13, 1.6 mm wall close-up | `ch=4&t=5` |
 | `probe-ch04-resistive.jpg` | 4 Why nothing corrodes | 2:13, resistive sensor corroding | `ch=4&t=15` |
+| `probe-ch05-curve.jpg` | 5 How it senses | 2:32, ε → θ curve and the Topp fit | `ch=5&t=22` |
 | `probe-ch06-guards.jpg` | 6 Guard rings | 2:47, field overlap without guards | `ch=6&t=8` |
 | `probe-ch08-irrigate.jpg` | 8 One AWD cycle | 3:08, IRRIGATE NOW at −15 cm | `ch=8&t=31` |
 | `probe-ch09-leak.jpg` | 9 The grid talks | 4:02, B2 leaking bund | `ch=9&t=11` |
 | `probe-ch11-calibration.jpg` | 11 Calibrate it | 4:46, cups, oven, fitted curve | `ch=11&t=27` |
 | `probe-ch17-sms.jpg` | 17 Backend + farmer | 4:12, phone with the Marathi SMS | `ch=17&t=22` |
+| `probe-ch17-pipeline.jpg` | 17 Backend + farmer | 4:40, the three-model pipeline cards | `ch=17&t=12` |
 | `probe-ch18-ipcc.jpg` | 18 Impact and scale | 6:45, IPCC formula card | `ch=18&t=9` |
 
 ## General chapter frames

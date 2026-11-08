@@ -1,0 +1,215 @@
+1
+00:00:00,000 --> 00:00:07,000
+India's rice paddies release about six and a half million tonnes of methane every year.
+
+2
+00:00:07,000 --> 00:00:15,000
+Most of it comes from one habit: keeping fields flooded all season. The fix is already known.
+
+3
+00:00:15,000 --> 00:00:21,000
+The problem is, it happens fifteen centimetres underground, where nobody can see.
+
+4
+00:00:21,000 --> 00:00:25,000
+I'm Neeraj, and this is AGRI-GRID.
+
+5
+00:00:25,000 --> 00:00:38,000
+Flooded soil has no oxygen, so microbes in it make methane. IRRI's answer is alternate wetting and drying, AWD: let the water drop below the surface, then flood again.
+
+6
+00:00:38,000 --> 00:00:50,000
+It saves up to thirty percent of the water, and cuts methane by up to forty-eight percent. India grows rice on about fifty-one million hectares, so this matters.
+
+7
+00:00:50,000 --> 00:00:57,000
+But AWD has one rule: re-irrigate when the water is fifteen centimetres below the soil.
+
+8
+00:00:57,000 --> 00:01:15,000
+Today a farmer checks that by hand, with a pipe, in one spot, if he has time. Nobody buying carbon credits can verify it was done. And satellites help, but radar only sees the top five centimetres.
+
+9
+00:01:15,000 --> 00:01:18,000
+So AGRI-GRID connects three layers.
+
+10
+00:01:18,000 --> 00:01:23,000
+Ground: a probe that reads water at four depths.
+
+11
+00:01:23,000 --> 00:01:28,000
+Space: Sentinel-1 radar over the whole farm.
+
+12
+00:01:28,000 --> 00:01:38,000
+And AI that turns both into one decision for the farmer, and one record anyone can check.
+
+13
+00:01:38,000 --> 00:01:45,000
+Let me show you each piece, starting underground.
+
+14
+00:01:45,000 --> 00:01:55,000
+This is the probe. A twenty-five millimetre tube, 3D-printed in PETG. White above the soil, black below.
+
+15
+00:01:55,000 --> 00:02:04,000
+Inside, four copper bands sit at zero to five, five to ten, ten to fifteen and fifteen to twenty centimetres.
+
+16
+00:02:04,000 --> 00:02:08,000
+It prints in two halves.
+
+17
+00:02:08,000 --> 00:02:13,000
+The copper goes into shallow pockets, and the halves seal with epoxy.
+
+18
+00:02:13,000 --> 00:02:19,000
+The plastic wall is the insulator. No metal touches the soil, so nothing corrodes,
+
+19
+00:02:19,000 --> 00:02:25,000
+unlike the cheap two-prong sensors that rust in weeks.
+
+20
+00:02:25,000 --> 00:02:32,000
+Each band is a capacitor. Its electric field reaches through the wall into the soil.
+
+21
+00:02:32,000 --> 00:02:47,000
+Water has a permittivity of about eighty; dry soil, about four. So as soil gets wetter, capacitance rises, and the ESP32's touch pins measure it directly. A published equation, Topp 1980, turns that into water content.
+
+22
+00:02:47,000 --> 00:02:53,000
+Guard rings make sure each band reads only its own slice of soil.
+
+23
+00:02:53,000 --> 00:03:08,000
+Here is one drying cycle: about ten days in a few seconds. The water strip follows the flood down. Then the bands dry, top to bottom.
+
+24
+00:03:08,000 --> 00:03:15,000
+At minus fifteen, the node flags: irrigate.
+
+25
+00:03:15,000 --> 00:03:18,000
+This is what's on our bench today.
+
+26
+00:03:18,000 --> 00:03:21,000
+The gateway prototype: the box that sits at the farmhouse.
+
+27
+00:03:21,000 --> 00:03:26,000
+Mains-powered, with the power module
+
+28
+00:03:26,000 --> 00:03:30,000
+and the controller board inside.
+
+29
+00:03:30,000 --> 00:03:36,000
+And here it is powered on.
+
+30
+00:03:36,000 --> 00:03:41,000
+The probes and field nodes are being built to the design you just saw.
+
+31
+00:03:41,000 --> 00:03:45,000
+The node electronics follow our build sheet.
+
+32
+00:03:50,000 --> 00:04:02,000
+In the field, every node sends its readings to that gateway over ESP-NOW, the ESP32's own radio. No Wi-Fi network, and no SIM card on each node.
+
+33
+00:04:02,000 --> 00:04:12,000
+Here, node B2 is losing water three times faster than its neighbours. That isn't normal drying. That's a leaking bund.
+
+34
+00:04:12,000 --> 00:04:18,000
+The farmer never sees any of the backend. He gets one SMS, in Marathi:
+
+35
+00:04:18,000 --> 00:04:24,000
+शेत सुकत आहे. २–३ दिवसांत पाणी देण्याची तयारी ठेवा. Field is drying. Plan to irrigate in 2–3 days.
+
+36
+00:04:24,000 --> 00:04:40,000
+One tap opens the app: today's water level, the plan, the rain forecast, and a button to call an agronomist.
+
+37
+00:04:40,000 --> 00:04:46,000
+Now, where the AI does its work. Three models, each with one job.
+
+38
+00:04:46,000 --> 00:04:55,000
+First, calibration: it turns raw counts into water content, fitted to oven-dried samples of local soil.
+
+39
+00:04:55,000 --> 00:05:05,000
+Second, anomaly detection: an Isolation Forest compares how fast each node dries. That's how B2's leak gets caught.
+
+40
+00:05:05,000 --> 00:05:17,000
+Third, space. We trained a U-Net on Sentinel-1 radar to map water across whole fields. Here is a radar chip, our prediction, and the ground truth.
+
+41
+00:05:17,000 --> 00:05:25,000
+Per-chip mean IoU is zero point three eight. A working first model, and the number we'll push up with more labelled fields.
+
+42
+00:05:25,000 --> 00:05:40,000
+And the part I care most about: the disagreement engine. If the probe says wet and the radar says dry, we don't average them. We flag the field for a person to check. That's what makes the record trustworthy.
+
+43
+00:05:40,000 --> 00:05:50,000
+All of this lands on one dashboard. This is the farm view, every field coloured by its state.
+
+44
+00:05:50,000 --> 00:06:02,000
+Open a field and you get today's decision, the four probe bands, the water history and the SMS that went out.
+
+45
+00:06:02,000 --> 00:06:12,000
+Weather comes from open data for that exact location. Field officers and farmer groups use this view; farmers just get the SMS.
+
+46
+00:06:12,000 --> 00:06:20,000
+And this explorer, which you've been watching, is part of the site too: anyone can open it and learn how the probe works.
+
+47
+00:06:20,000 --> 00:06:33,000
+To be clear about where we are. The gateway hardware, the dashboard and the explorer are built. The SAR model is trained. The probe is designed and being printed.
+
+48
+00:06:33,000 --> 00:06:45,000
+Probe readings you saw are simulated, and the thresholds are illustrative until we calibrate in real soil. That calibration is the first job of our pilot.
+
+49
+00:06:45,000 --> 00:06:57,000
+Why this is worth building: on one hectare, IPCC defaults put continuous flooding at around a hundred and forty kilograms of methane a season, and AWD at around eighty.
+
+50
+00:06:57,000 --> 00:07:03,000
+Our prototype setup, three field nodes and a gateway, costs about fifteen thousand rupees.
+
+51
+00:07:03,000 --> 00:07:11,000
+We start with farmer producer organisations, then KVK pilots,
+
+52
+00:07:11,000 --> 00:07:20,000
+then use the same records for methane-credit verification. And the platform carries over to sugarcane, wheat and cotton.
+
+53
+00:07:20,000 --> 00:07:30,000
+The decision happens fifteen centimetres underground. AGRI-GRID sees it, tells the farmer, and proves it.
+
+54
+00:07:30,000 --> 00:07:35,000
+I'm Neeraj Parekh, team FusionForge. Thank you.

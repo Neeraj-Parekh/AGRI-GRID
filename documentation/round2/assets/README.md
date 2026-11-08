@@ -76,12 +76,21 @@ module is solder-down, and the Fibox IP rating does not survive drilling for gla
 
 ## `probe-stills/`
 
-Twenty-one 1920 × 1080 paused frames from the Probe Explorer, captured with the laptop GPU and
-the same `?ch=&t=&paused=1` links an editor can reproduce. Twelve of them were captured at the
+Twenty-three 1920 × 1080 paused frames from the Probe Explorer, captured with the laptop GPU and
+the same `?ch=&t=&paused=1` links an editor can reproduce. Fourteen of them were captured at the
 exact timestamps the 7:35 script asks for; the rest cover chapters 1, 2, 3, 5, 7, 8, 10, 14 and
 17. The frame labels (`Design render`, `Simulated data`, `Illustration`, `Literature`) are part
 of the image and are meant to stay on screen. `ch10` still uses the labelled synthetic SAR pass;
 the 7:35 script does not use it.
+
+## `animatic/`
+
+The whole 7:35 script cut to picture as a silent 1080p scratch animatic. Every shot is
+labelled with its source, the voice-over line runs as a lower third, and the three face-cam
+shots are explicit placeholder cards. `VO-CUES.md` gives each line an in/out point;
+`AGRI-GRID-Round2-animatic.srt` is the same timing as subtitles. Use it to record the narration
+and the face takes. It is not the final film: the Probe Explorer and dashboard shots are
+stills, not motion, and the hardware clip is powered on throughout.
 
 ## `sar/`
 

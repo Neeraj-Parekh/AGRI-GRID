@@ -138,7 +138,9 @@ empty prototype and would overclaim.
 1. **Face cam and voice** — you are recording these. The eight 16 Oct takes in
    `~/Videos/Camera/` are generic talking-head b-roll, not script takes. Everything else for
    the hardware beat is in `assets/hardware/`: the gateway clip, the internals close-up, the
-   LED shot and the ESP32 bench stills.
+   LED shot and the ESP32 bench stills. Record against the **7:35 scratch animatic** in
+   `assets/animatic/`; its README has the three face takes and the audio settings, and
+   `VO-CUES.md` has every line with its in/out point.
 2. **Text and diagram cards** — the Beat 3 diagram, the Beat 9 honesty card and the
    `LIVE` / `DEMO` / `CAD` / `AI visual` / `NOT YET BUILT` labels are edit work. The Round 1
    deck text layer is now present in `assets/round1-deck/`, so the `[DECK sNN]` slides no longer

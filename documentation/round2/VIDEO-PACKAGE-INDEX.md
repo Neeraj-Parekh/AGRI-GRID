@@ -101,9 +101,10 @@ box: there isn't one yet.
 | Manufacturer resources | `documentation/round2/assets/v2-manufacturer-resources.zip` | Fibox/ESP32/EBYTE/Genasun/DFRobot source CAD and datasheets |
 | Probe scene contact sheet | `websites/2026-11-08-probe-explorer/review/probe/probe-scenes-preview.jpg` | 1990 × 1604 sheet of the probe chapters, for shot selection |
 | Deck visuals, 12 backgrounds | `documentation/round2/assets/deck-visuals/` | 1672 × 941 AI editorial visuals, **not photographs**; later redesign, not the 18-slide deck |
-| Probe stills, 1080p | `documentation/round2/assets/probe-stills/` | twenty-one paused frames; twelve match script timestamps, reproducible links in its README |
+| Probe stills, 1080p | `documentation/round2/assets/probe-stills/` | twenty-three paused frames; fourteen match script timestamps, reproducible links in its README |
 | Gateway prototype clip | `documentation/round2/assets/hardware/` | 33 s phone clip on a 1080p canvas, internals close-up, LED and ESP32 bench stills |
 | SAR triptych and metrics card | `documentation/round2/assets/sar/` | real U-Net output on one Spain test chip (IoU 0.61), plus the 89-chip 0.3817 card |
+| 7:35 scratch animatic | `documentation/round2/assets/animatic/` | silent 1080p cut of the whole script with VO lower thirds and face-cam placeholders |
 
 ## 5. Missing before the edit
 
