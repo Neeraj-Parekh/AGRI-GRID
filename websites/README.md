@@ -81,17 +81,32 @@ http://localhost:5174/ from the extracted copy in `../../agri-sites/agri-grid-cu
 
 ## Vercel
 
-One project is enough for both publishable builds, because the probe is a route of the same
-app, not a separate app.
+**Live production site: <https://agri-grid-chi.vercel.app>** — the 8 Nov build, deployed on
+8 Nov 2026 from commit `77fcafc`. `/`, `/dashboard` and `/probe` are verified on the live
+domain; the probe renders 1920 × 1080 in record mode.
 
-1. Push this repo to GitHub (`Neeraj-Parekh/AGRI-GRID`).
-2. In Vercel: **Add New → Project → import the repo**.
-3. Set **Root Directory** to `websites/2026-11-08-probe-explorer/frontend`
-   (or `frontend` after the snapshot is merged into the main app).
-4. Framework preset **Vite**. Build `npm run build`. Output `dist`.
-5. No environment variables are required. `vite.config.js` already switches `base` to `/`
-   when `VERCEL` is set, and `vercel.json` rewrites every path to `index.html` so
-   `/probe`, `/dashboard` and deep links survive a refresh.
+| Field | Value |
+|---|---|
+| Project | `agri-grid` (`prj_1qxWcfnOEAhoz3QURemfVwjWNftF`) |
+| Team | `team_mS8s9bkWFBEtKPoRCbuRsanE` |
+| Root Directory | `websites/2026-11-08-probe-explorer/frontend` |
+| Deployment | Vercel CLI, not Git integration |
+
+One project is enough for both publishable builds, because the probe is a route of the same
+app, not a separate app. Because it was deployed by CLI, **a push to `main` does not redeploy
+automatically** — run `vercel deploy --prod` again, or import the repo into the existing
+project to turn on Git deploys. Full runbook: `documentation/round2/DEPLOY-VERCEL.md`.
+
+To redeploy from the repo:
+
+```bash
+cd websites/2026-11-08-probe-explorer/frontend
+VERCEL_TOKEN=... npx vercel deploy --prod --yes
+```
+
+No environment variables are required. `vite.config.js` switches `base` to `/` when `VERCEL`
+is set, and `vercel.json` rewrites every path to `index.html` so `/probe`, `/dashboard` and
+deep links survive a refresh.
 
 Do **not** import the Yenprotek mirror. If a second public demo is wanted, point a second
 Vercel project at the 4 Nov build instead.

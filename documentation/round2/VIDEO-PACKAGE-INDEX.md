@@ -4,6 +4,9 @@ One place to collect everything the video needs: the running website, the CAD, a
 idea/pitch material. Each row says where the file is, what it actually is, and whether it
 is ready to film.
 
+**For the 7:35 Round 2 script, use `VIDEO-SHOT-MAP.md`** — it maps every line of
+`VIDEO-SCRIPT.md` to an asset, a URL and a status. This page is the wider inventory.
+
 **Rule for the edit:** every shot is labelled with its source. A render is not a photo of
 a built part; a demo-mode chart is not live field data. Put the label in the corner of the
 shot or in the voice-over, and keep it consistent.
@@ -38,7 +41,7 @@ provenance and Vercel settings; `agri-sites/start-all.sh` starts all four server
 | Run guide + demo path | `README-AGRI-GRID-WEBSITE.md` | 2-minute walkthrough and the curl ingest for a live badge |
 | GitHub Pages (older) | https://Neeraj-Parekh.github.io/AGRI-GRID/ | built from commit `15b3840`, 2 Nov; behind the local builds |
 | Recorded screenshots | `agri-sites/screenshots/` | landing, AGRI-GRID home, dashboard, Yenprotek |
-| Vercel deployment | `documentation/round2/DEPLOY-VERCEL.md` | root directory, token commands, fallback behaviour |
+| Vercel deployment | https://agri-grid-chi.vercel.app | live 8 Nov build; runbook `documentation/round2/DEPLOY-VERCEL.md` |
 
 Routes worth filming: `/` story home, `/dashboard`, `/fields`, `/fields/AGRI-001`,
 `/intelligence` (detect / infer / predict), `/evidence` (two records, one consistent and one
@@ -87,7 +90,7 @@ box: there isn't one yet.
 | Concept note | `AGRI-GRID-CONCEPT-NOTE.md` | short framing text |
 | Build plan / research | `AGRI-GRID-BUILD-PLAN.md`, `documentation/round2/*` | long-form backing |
 | Deck prompt | `AGRI-GRID-PPT-PROMPT.md` | a prompt for a deck, **not a deck** |
-| Deck | — | **missing**: there is no AGRI-GRID .pptx in the repo |
+| Deck | — | **text layer missing**: no AGRI-GRID .pptx in the repo; twelve visual backgrounds are in `documentation/round2/assets/deck-visuals/` |
 | One-page site mock | `claude/AGRI-GRID V2 Field Station (1).html` | static single-page mock |
 | Build sheet | `claude/AGRI_GRID_Prototype_Build_Sheet (5).pdf` | wiring, pin map, probe geometry, 10 pages |
 | Build-sheet source | `documentation/round2/assets/prototype-circuits/` | `diagrams.py` + PNG/SVG of probe, field, hero, perfboard, gateway, system |
@@ -97,7 +100,8 @@ box: there isn't one yet.
 | Transcript asset map | `documentation/round2/V2-TRANSCRIPT-ASSET-MAP.md` | 43 named assets: 21 present, 22 missing, pull order |
 | Manufacturer resources | `documentation/round2/assets/v2-manufacturer-resources.zip` | Fibox/ESP32/EBYTE/Genasun/DFRobot source CAD and datasheets |
 | Probe scene contact sheet | `websites/2026-11-08-probe-explorer/review/probe/probe-scenes-preview.jpg` | 1990 × 1604 sheet of the probe chapters, for shot selection |
-| Probe stills, 1080p | `documentation/round2/assets/probe-stills/` | nine paused frames, reproducible links in its README |
+| Deck visuals, 12 backgrounds | `documentation/round2/assets/deck-visuals/` | 1672 × 941 AI editorial visuals, **not photographs**; text layer still missing |
+| Probe stills, 1080p | `documentation/round2/assets/probe-stills/` | twenty-one paused frames; twelve match script timestamps, reproducible links in its README |
 
 ## 5. Missing before the edit
 

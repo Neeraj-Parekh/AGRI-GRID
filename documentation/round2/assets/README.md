@@ -1,8 +1,8 @@
 # Round-2 asset packs
 
-Two extracted, ready-to-use packs for the video and the submission. Both are copies of
-material that already existed elsewhere in the repo or in the supplied backups; the point of
-this folder is to have one predictable path per asset instead of hunting through `claude/`,
+Extracted, ready-to-use packs for the video and the submission. Most are copies of material that
+already existed elsewhere in the repo or in the supplied backups; the point of this folder is to
+have one predictable path per asset instead of hunting through `claude/`,
 `documentation/round2/cad/` and the Downloads folder.
 
 ## `prototype-circuits/`
@@ -76,11 +76,19 @@ module is solder-down, and the Fibox IP rating does not survive drilling for gla
 
 ## `probe-stills/`
 
-Nine 1920 × 1080 paused frames from the Probe Explorer, captured with the laptop GPU and the
-same `?ch=&t=&paused=1` links an editor can reproduce. They cover chapters 1, 2, 3, 5, 7, 8,
-10, 14 and 17. The frame labels (`Design render`, `Simulated data`, `Illustration`) are part of
-the image and are meant to stay on screen. `ch10` still uses the labelled synthetic SAR pass
-until `surat.jpg` is supplied.
+Twenty-one 1920 × 1080 paused frames from the Probe Explorer, captured with the laptop GPU and
+the same `?ch=&t=&paused=1` links an editor can reproduce. Twelve of them were captured at the
+exact timestamps the 7:35 script asks for; the rest cover chapters 1, 2, 3, 5, 7, 8, 10, 14 and
+17. The frame labels (`Design render`, `Simulated data`, `Illustration`, `Literature`) are part
+of the image and are meant to stay on screen. `ch10` still uses the labelled synthetic SAR pass;
+the 7:35 script does not use it.
+
+## `deck-visuals/`
+
+Twelve 16:9 editorial backgrounds copied from the Round 1 deck assets, 1672 × 941 JPEGs. They
+are **AI-generated visuals, not photographs**; label them `AI visual` if they appear as evidence.
+Use them as backgrounds and add the text in the edit. The deck's `.pptx` text layer is still not
+in the repo. See the README in that folder for a per-slide map.
 
 ## Provenance
 

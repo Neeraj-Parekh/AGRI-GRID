@@ -6,6 +6,25 @@ app (`/probe`), not a separate build, so there is nothing to deploy twice.
 **Deploy this:** `websites/2026-11-08-probe-explorer/frontend`
 **Never deploy this:** `yenprotek-offline/` (reference mirror, not ours to publish)
 
+## Live deployment
+
+| Field | Value |
+|---|---|
+| Production URL | <https://agri-grid-chi.vercel.app> |
+| Deployment URL | <https://agri-grid-3gpluoic6-neeraj-parekhs-projects.vercel.app> |
+| Project | `agri-grid` |
+| Project ID | `prj_1qxWcfnOEAhoz3QURemfVwjWNftF` |
+| Team / Org ID | `team_mS8s9bkWFBEtKPoRCbuRsanE` |
+| Root Directory | `websites/2026-11-08-probe-explorer/frontend` |
+| Status | deployed **via CLI** from commit `77fcafc` on 8 Nov 2026 |
+
+Verified on the live domain: `/`, `/dashboard` and `/probe` all return 200, the probe canvas
+renders at 1920 × 1080 in record mode, and there are no console errors.
+
+**Auto-deploy is not connected yet.** The project was created and deployed with the CLI, so a
+push to `main` does not redeploy by itself. To connect it, follow Option A below and link the
+GitHub repository to the existing `agri-grid` project; until then, redeploy with Option B.
+
 ## Option A — GitHub → Vercel (recommended)
 
 1. Push `main` to `github.com/Neeraj-Parekh/AGRI-GRID`. The current `main` contains the
