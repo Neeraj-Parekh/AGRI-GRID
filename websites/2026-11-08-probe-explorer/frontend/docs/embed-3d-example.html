@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AGRI-GRID 3D embed example</title>
+<!-- Use the 3D scenes on any static page (e.g. the multilingual site) without React.
+     Copy src/three/*.js next to this file, or point the paths at your deployed copy. -->
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/examples/jsm/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<style>
+  body{margin:0;font-family:system-ui,sans-serif}
+  #sky{height:320px}
+  #story{height:600vh;position:relative} #story .stick{position:sticky;top:0;height:100vh}
+</style>
+</head>
+<body>
+<div id="sky"></div>
+<section id="story"><div class="stick"></div></section>
+<script type="module">
+  import { mountSky } from './three/skyScene.js';
+  import { mountStory } from './three/storyScene.js';
+
+  // Living-sky banner. nodes: water in cm (+ above soil), status normal|watch|alert
+  const sky = mountSky(document.getElementById('sky'), {
+    lat: 18.52, lng: 73.85,
+    nodes: [{ id: 'A1', water: 6.8, status: 'normal' }, { id: 'B2', water: 2.4, status: 'alert' },
+            { id: 'C3', water: 5.9, status: 'normal' }, { id: 'D4', water: 5.7, status: 'normal' }],
+  });
+  // sky.update({ hour: 18 }) to force dusk; sky.update({ weather: { cloud: .8, rain: .6, wind: .7 } })
+
+  // Scroll story: feed it scroll progress 0..1
+  const sec = document.getElementById('story');
+  const story = mountStory(sec.querySelector('.stick'), { onChapter: i => console.log('chapter', i) });
+  addEventListener('scroll', () => {
+    const r = sec.getBoundingClientRect(), total = sec.offsetHeight - innerHeight;
+    story.setProgress(Math.min(1, Math.max(0, -r.top / total)));
+  }, { passive: true });
+</script>
+</body>
+</html>

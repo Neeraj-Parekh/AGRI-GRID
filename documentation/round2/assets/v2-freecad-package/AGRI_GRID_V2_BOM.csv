@@ -1,0 +1,55 @@
+Item,Qty,Manufacturer,Part number,Status,Source / verification,Notes
+"Mast, GI pipe 60.3 x 3.65 (IS 1239 50NB medium)",1,Local / IS 1239,50NB-M x 2550 mm,CUSTOM,IS 1239-1 nominal size,Cut length = above-ground + embedment. Wind check in README.
+Mast top cap / panel base plate 160x160x8,1,,,CUSTOM,,"Welded to mast top, carries hinge lugs. Seals pipe."
+"Concrete footing M20, 300x300x650",1,,,CUSTOM,,"Plain M20 concrete, crown 50 mm proud, sloped top recommended."
+Anti-rotation bar 12 mm through mast,1,,,CUSTOM,,"12 mm rebar through drilled mast, cast in footing."
+Enclosure adapter plate Al 5 mm 170 x 360,1,,,CUSTOM,,Fibox wall lugs FP 22046 screw to this plate. U-bolt holes above/below the enclosure.
+Pipe saddle block Al 70x20x40,2,,,CUSTOM,,Spacer between pipe and adapter plate; V-notch optional.
+U-bolt M8 for 60 mm pipe (SS304),2,Generic,"U-bolt M8, 60 mm ID",PROXY,,Bow simplified to a bar for envelope.
+Fibox wall fastening lug FP 22046,4,Fibox,FP 22046 (set of 4),DATASHEET,fibox.com product 6011329 accessories: 35x16x10 mm,Position along edge approximate - check lug seat on enclosure STEP.
+Hinge lug plate 8 mm,2,,,CUSTOM,,"Welded to cap plate; 35 mm bore = bearing for 33.7 hinge tube, M10 clamp bolt."
+Hinge cross tube 33.7 x 3.2,1,,,CUSTOM,,Rotates in the 35 mm lug bores; rails clamp to it; locked by tilt struts.
+Panel rail Al angle 40x40x4,2,,,CUSTOM,,Length = panel slope width. Drill to panel frame holes (verify on delivered panel).
+Solar panel 20 Wp 12 V,1,WAAREE,WS-20-12V (PROVISIONAL),PROXY,WAAREE shop 516x460x40 / L&T-SuFin 485x350x22 (Voc 21.17 V) - CONFLICT,PROVISIONAL PANEL - SKU/size not verified. Set PANEL_L/WD/T.
+"Tilt strut 16 mm, slotted",2,,,CUSTOM,,Slotted flat bar / rod sets tilt 10-30 deg. Length shown at current tilt.
+Enclosure Fibox MNX PC 200/150 HG,1,Fibox,6011329,DATASHEET,"fibox.com/products/MNX/PC-ABS-200H/6011329 : 255x180x150, IP66/IP67, IK08, PC","External size verified. Base/cover split, wall and boss positions PROVISIONAL - replace with 6011329_FIBOX_MNX_PC_200_150_HG.step (Fibox login)."
+Plate screw (supplied with base),4,Fibox,,PROXY,,
+EPDM pad 3 mm 65x151,1,,,CUSTOM,,
+Battery LiFePO4 12.8 V 6 Ah (76.8 Wh),1,Himax (candidate),12.8V 6Ah - SKU NOT VERIFIED,PROXY,Himax-class 151x65x94 envelope,Terminal face toward cover. Confirm terminal type/positions.
+Hook-and-loop strap 25 mm,2,,,PROXY,,
+"Battery cradle, Al 2 mm bent",1,,,CUSTOM,,"Flange screwed to plate (2x M3), shelf supports battery bottom."
+Solar charge controller Genasun GV-5-Li-14.2V,1,Genasun,GV-5-Li-14.2V,DATASHEET,"Genasun/Sunforge: 4.3 x 2.2 x 1.14 in (110 x 56 x 29 mm), 80 g, 6-pos terminal",Outline verified; mounting-hole positions PROXY - use Genasun .stp. Earlier 74x46 figure was wrong.
+Standoff M2 x 4 (brass/nylon),4,,,PROXY,,
+5 V regulator Pololu D24V50F5 (5 A),1,Pololu,#2851 D24V50F5,DATASHEET,"pololu.com/product/2851: 0.7 x 0.8 x 0.35 in (17.8 x 20.3 x 8.8), 2x M2 holes 0.53 x 0.63 in",STEP + drill DXF on Pololu page - swap in.
+3.3 V regulator Pololu D24V22F3 (2.6 A),1,Pololu,#2857 D24V22F3,DATASHEET,"pololu.com D24V22Fx: 0.7 x 0.7 in (17.8 x 17.8), hole spacing per drill DXF",Hole pattern PROXY (diagonal) - confirm with Pololu drill guide.
+Standoff M3 x 6 (brass/nylon),10,,,PROXY,,
+ESP32 carrier PCB 64x34 (perfboard / custom),1,,,CUSTOM,,"2x 1x19 female headers, 5 V screw terminal, sensor connectors."
+Female header 1x19 2.54 mm,2,,,PROXY,,
+Controller Espressif ESP32-DevKitC V4,1,Espressif,ESP32-DevKitC-32E (V4) - verify variant,DATASHEET,Espressif DevKitC V4: 54.4 x 27.9 mm incl. PCB antenna; 2x19 pins 2.54 mm,Header row spacing 25.4 mm assumed - CHECK. Keep metal >10 mm from PCB antenna end.
+E22 carrier PCB 24x26 (custom),1,,,CUSTOM,,"Breakout for SMD module: 2.54 mm headers, 100 uF bulk cap, u.FL."
+LoRa module EBYTE E22-900M22S (SX1262),1,EBYTE,E22-900M22S,DATASHEET,"EBYTE: 20 x 14 x 2.8 mm, 850-930 MHz, 22 dBm, 3.3 V",Configure IN865 (865-867 MHz) for India. Separate 3.3 V rail.
+Isolated RS485-UART DFRobot DFR0845,1,DFRobot,DFR0845,DATASHEET,Gotronic/DFRobot: 47 x 37 mm,Outline verified; hole positions PROXY (40x30) - check DFRobot dimension PDF.
+3-way mini blade fuse holder (PCB/panel),1,,,PROXY,,"F1 battery 7.5 A, F2 5 V reg 5 A, F3 sensors 1 A (size to wire)."
+Mini blade fuse,3,,,PROXY,,
+Terminal strip 8-way 5.08 mm (+12/+5/+3V3),1,,,PROXY,,
+GND bus 5-way,1,,,PROXY,,
+Mounting plate Fibox MIV 200 (galv. steel),1,Fibox,5514080 MIV 200,DATASHEET,fibox.com 5514080: 223 x 148 x 1.5 mm,All component holes are drilled by you - see plate DXF.
+Cable gland LAPP SKINTOP ST-M 20 x 1.5,1,LAPP,53111220,DATASHEET,"LAPP 53111220: M20x1.5, clamp 6-13 mm, PA, IP68/69","Entry: Solar panel - 2-core PV cable, OD 6-13 mm. Body envelope approximate."
+Locknut SKINTOP GMP-GL-M 20,1,,,PROXY,,
+Cable gland LAPP SKINTOP ST-M 16 x 1.5,3,LAPP,53111210 (verify),PROXY,M16 variant: clamp 4.5-10 mm (verify),Entry: Soil probe SEN0602 - 4-core RS485 cable. Body envelope approximate.
+Locknut SKINTOP GMP-GL-M 16,3,,,PROXY,,
+Pressure compensation element icotek PCE 12,1,icotek,99190,PROXY,"icotek PCE: M12 x 1.5, IP68, PA",Envelope only - body dims not in datasheet text.
+"SMA bulkhead jack IP67 + O-ring, u.FL pigtail 200 mm",1,,,PROXY,,"Top-face entry: O-ring outside, nut inside. Or move to side wall."
+Antenna TE/Linx ANT-868-CW-HW-SMA,1,TE Connectivity / Linx,ANT-868-CW-HW-SMA,DATASHEET,"Linx data sheet: 135.5 mm long, 10.7 mm max dia, 855-880 MHz, 1/2-wave",Base/whip split approximate; overall length + max dia per datasheet.
+Arm clamp for 60 mm pipe (2-piece),2,,,CUSTOM,,"Two-piece clamp, 2x M8. Same design for both sensor arms."
+Arm tube 26.9 x 2.6 (20NB),2,,,CUSTOM,,
+Shield bracket flat 30x6,1,,,CUSTOM,,
+"Radiation shield 7-plate, dia 120 x 140",1,Generic / select model,,PROXY,,Pick real shield; keep >= 1.25 m above crop canopy.
+"Air T/RH sensor (SHT31/SHT35 class, sealed probe)",1,,,PROXY,,"Model not selected. Probe sits mid-stack, cable exits top."
+"Ultrasonic bracket, slotted (height adjust)",1,,,CUSTOM,,Vertical slot gives +/-50 mm height adjust.
+Water level sensor DFRobot SEN0311 (A02YYUW),1,DFRobot,SEN0311,PROXY,"DFRobot: 3-450 cm, 3 cm blind, 60 deg, IP67, UART; reseller: 84.5 x 30 x 19 mm, 30 cm lead",Envelope from reseller size only - verify on part. 30 cm lead needs a sealed extension.
+"Soil probe DFRobot SEN0602 (RS485: moisture, temp, pH)",1,DFRobot,SEN0602,PROXY,"DFRobot wiki: overall 127 x 45 x 15 mm, 316SS, IP68, 5-30 V, 2 m cable",Measures moisture/temperature/pH - NOT EC. Body/needle split approximate.
+Probe marker / cable stake,1,,,CUSTOM,,
+PV cable 2 x 2.5 mm2 (UV),1,,,REFERENCE,,Drip loop below enclosure before every gland.
+Sensor cable 4-core shielded,3,,,REFERENCE,,
+Ground conduit / cable cover (HDPE),1,,,CUSTOM,,Protects soil-probe cable from tractors/rats. Not modelled along full path.

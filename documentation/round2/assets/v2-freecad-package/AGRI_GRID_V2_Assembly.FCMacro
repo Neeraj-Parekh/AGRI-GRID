@@ -1,0 +1,830 @@
+# -*- coding: utf-8 -*-
+"""
+AGRI-GRID V2  -  Parametric FreeCAD assembly macro
+==================================================
+Solar-powered paddy / AWD field-monitoring station: mast, solar panel,
+Fibox MNX enclosure with full internal layout, sensors, glands, antenna,
+cable routes and reference volumes.
+
+HOW TO USE (FreeCAD 0.21 / 1.0 / 1.1)
+  1. Macro > Macros... > (point "User macros location" at this folder) > select
+     this file > Execute.            (or: Macro > Execute macro...)
+  2. A document "AGRI_GRID_V2" is created with:
+       - Params   spreadsheet: every driving dimension (mm / deg)
+       - BOM      spreadsheet: bill of materials incl. source + verification status
+       - 01..08   App::Part sub-assemblies with named, coloured parts
+  3. To re-tune: edit values in the Params spreadsheet (column B), then run the
+     macro again while that document is active. It reads the sheet and rebuilds
+     every part at the new dimensions. (Or edit the P dictionary below.)
+  4. Each part carries custom properties (group "AGRI_GRID"):
+       Manufacturer, PartNumber, Status, Source, Notes
+     Status values:
+       DATASHEET  - outline from manufacturer datasheet / official listing
+       PROXY      - dimensionally reasonable envelope, NOT manufacturer CAD
+       CUSTOM     - part you fabricate (dimensions are the design)
+       REFERENCE  - clearance / field-of-view / routing helper, not a part
+  5. Replace any PROXY with the vendor STEP when you have it:
+       File > Import the STEP, align it to the proxy, hide/delete the proxy.
+
+Coordinate system (world, mm):
+  Z up, ground level at Z = 0, mast axis on Z through X = Y = 0.
+  +Y = equator-facing side (south in India). Enclosure door and panel face +Y.
+
+The same file can be imported by plain Python (no FreeCAD) - the data layer
+(build_parts) is pure Python; that is how the companion STEP file was generated.
+"""
+
+import math
+
+# ---------------------------------------------------------------------------
+# 1. DRIVING PARAMETERS  (all mm unless noted)  -  mirrored in "Params" sheet
+# ---------------------------------------------------------------------------
+P = {
+    # --- Fibox MNX PC 200/150 HG (6011329): 255 H x 180 W x 150 D (Fibox site)
+    "ENC_W": 180.0,          # external width  (X)
+    "ENC_H": 255.0,          # external height (Z)
+    "ENC_D": 150.0,          # external depth  (Y) base + cover
+    "ENC_BASE_D": 120.0,     # PROVISIONAL: "high base" split - verify on MNX200H drawing
+    "ENC_WALL": 3.5,         # PROVISIONAL wall thickness
+    "ENC_Z0": 1100.0,        # height of enclosure bottom above ground
+    "LID_EXPLODE": 0.0,      # >0 moves the cover forward (+Y) for a service view
+    # --- Fibox MIV 200 mounting plate 223 x 148 x 1.5 (Fibox accessory page)
+    "PLATE_W": 148.0,
+    "PLATE_H": 223.0,
+    "PLATE_T": 1.5,
+    "PLATE_BOSS": 6.0,       # PROVISIONAL boss height floor -> plate back
+    "PLATE_HOLE_INSET": 6.0, # PROVISIONAL plate fixing hole inset from corner
+    # --- Mast (IS 1239 50NB medium GI pipe, 60.3 x 3.65) - see wind note
+    "MAST_OD": 60.3,
+    "MAST_WALL": 3.65,
+    "MAST_ABOVE": 2000.0,    # top of mast above ground
+    "MAST_EMBED": 550.0,     # length cast into footing
+    "FOOT_W": 300.0,         # concrete footing plan size (square)
+    "FOOT_DEPTH": 600.0,     # depth below ground
+    "FOOT_PROUD": 50.0,      # crown above ground
+    # --- Solar panel (PROVISIONAL - WAAREE WS-20-12V size conflict)
+    #     Official WAAREE shop: 516 x 460 x 40 / 3.5 kg   (default, worst case)
+    #     L&T-SuFin listing   : 485 x 350 x 22 / 1.98 kg
+    "PANEL_L": 516.0,        # along X (E-W)
+    "PANEL_WD": 460.0,       # along slope
+    "PANEL_T": 40.0,
+    "PANEL_TILT": 20.0,      # deg from horizontal, facing +Y
+    "PANEL_RAIL_INSET": 80.0,
+    # --- Battery 12.8 V 6 Ah LiFePO4 (Himax-class 151 x 65 x 94, PROXY)
+    "BATT_L": 151.0, "BATT_W": 65.0, "BATT_H": 94.0,
+    # --- Genasun GV-5 (all models 4.3 x 2.2 x 1.14 in = 110 x 56 x 29, Genasun/Sunforge)
+    "GV5_L": 110.0, "GV5_W": 56.0, "GV5_H": 29.0,
+    # --- Sensor arms
+    "TH_ARM_Z": 1600.0,      # air T/RH arm height
+    "TH_ARM_LEN": 450.0,     # shield centre distance from mast axis (-X)
+    "US_ARM_Z": 550.0,       # ultrasonic arm height (0.3-0.5 m above max water)
+    "US_ARM_LEN": 500.0,     # sensor distance from mast axis (+X)
+    "US_HALF_ANGLE": 30.0,   # deg (DFRobot: 60 deg reference angle)
+    "SOIL_X": -350.0, "SOIL_Y": 450.0,   # soil probe position
+    "SOIL_TOP_Z": 10.0,      # top of probe body (just proud of soil)
+    # --- Detail
+    "CABLE_D": 7.0,          # external sensor / solar cable diameter for routing
+}
+
+# Plate-coordinate layout (px measured from the plate edge at world -X, pz from the plate BOTTOM edge).
+# NOTE: facing the open enclosure (+Y side) world -X is on your RIGHT, so px runs right-to-left
+# as you look at it. The drill DXF/PDF are already mirrored to the front view - use those for drilling.
+LAYOUT = {
+    "battery":   (9.0, 60.0),
+    "cradle":    (7.0, 48.0),
+    "gv5":       (84.0, 100.0),
+    "reg5":      (84.0, 76.0),
+    "reg33":     (110.0, 77.0),
+    "esp_carrier": (80.0, 38.0),
+    "e22_carrier": (53.0, 16.0),
+    "dfr0845":   (4.0, 10.0),
+    "fuse":      (80.0, 4.0),
+    "tstrip":    (80.0, 22.0),
+    "gndbus":    (122.0, 22.0),
+}
+
+# Gland allocation on the enclosure BOTTOM face: (x_local, kind, label, cable)
+GLANDS = [
+    (-60.0, "M20", "Solar panel", "2-core PV cable, OD 6-13 mm"),
+    (-30.0, "M16", "Soil probe SEN0602", "4-core RS485 cable"),
+    (0.0,   "M16", "Water level SEN0311", "4-core UART (extend 30 cm lead)"),
+    (30.0,  "M16", "Air T/RH sensor", "4-core sensor cable"),
+    (60.0,  "M12V", "Pressure vent icotek PCE 12", "-"),
+]
+GLAND_Y = 50.0          # depth position of the gland row from the back face
+
+# ---------------------------------------------------------------------------
+# 2. COLOURS
+# ---------------------------------------------------------------------------
+C = {
+    "enc": (0.80, 0.81, 0.80), "lid": (0.74, 0.75, 0.74), "plate": (0.62, 0.64, 0.66),
+    "steel": (0.70, 0.72, 0.74), "galv": (0.66, 0.69, 0.71), "alu": (0.82, 0.83, 0.85),
+    "concrete": (0.62, 0.60, 0.56), "pv": (0.10, 0.16, 0.36), "frame": (0.78, 0.79, 0.80),
+    "batt": (0.13, 0.30, 0.70), "black": (0.10, 0.10, 0.11), "red": (0.80, 0.10, 0.10),
+    "pcb_blk": (0.08, 0.08, 0.08), "pcb_grn": (0.05, 0.40, 0.18), "pcb_blu": (0.10, 0.25, 0.65),
+    "metal": (0.75, 0.75, 0.72), "gold": (0.83, 0.68, 0.22), "white": (0.95, 0.95, 0.94),
+    "rubber": (0.15, 0.15, 0.15), "term_grn": (0.10, 0.55, 0.25), "term_blu": (0.15, 0.35, 0.80),
+    "orange": (0.95, 0.55, 0.10), "fov": (0.20, 0.70, 0.95), "cable": (0.06, 0.06, 0.06),
+    "coax": (0.25, 0.25, 0.25), "fuse": (0.95, 0.80, 0.15),
+}
+
+# ---------------------------------------------------------------------------
+# 3. DATA LAYER  -  pure python part specs
+# ---------------------------------------------------------------------------
+# Spec kinds:
+#   box   : p0 (min corner), size (sx,sy,sz)
+#   cyl   : base, dir, r, h
+#   cone  : base, dir, r1 (base), r2 (top), h
+#   tube  : base, dir, ro, ri, h
+#   ringcone: base, dir, ro1, ro2, ri, h   (hollow frustum, louvre plate)
+#   tray  : p0, size, t, open ('+x','-x','+y','-y','+z','-z')   open-faced box
+#   cable : pts [(x,y,z)...], r
+# Optional on every spec: rot = [(axis, deg, pivot), ...] applied in order,
+#   holes = [(centre, dir, r, depth)] and slots = [(p0, size)] (FreeCAD only).
+
+def _add(v, w):
+    return (v[0] + w[0], v[1] + w[1], v[2] + w[2])
+
+
+def rot_point(p, axis, deg, pivot):
+    """Rodrigues rotation of point p about axis through pivot."""
+    ax = axis
+    n = math.sqrt(ax[0] ** 2 + ax[1] ** 2 + ax[2] ** 2)
+    k = (ax[0] / n, ax[1] / n, ax[2] / n)
+    a = math.radians(deg)
+    v = (p[0] - pivot[0], p[1] - pivot[1], p[2] - pivot[2])
+    c, s = math.cos(a), math.sin(a)
+    kv = k[0] * v[0] + k[1] * v[1] + k[2] * v[2]
+    kxv = (k[1] * v[2] - k[2] * v[1], k[2] * v[0] - k[0] * v[2], k[0] * v[1] - k[1] * v[0])
+    r = tuple(v[i] * c + kxv[i] * s + k[i] * kv * (1 - c) for i in range(3))
+    return (r[0] + pivot[0], r[1] + pivot[1], r[2] + pivot[2])
+
+
+def build_parts(P, layout=None, glands=None):
+    L = layout or LAYOUT
+    G = glands or GLANDS
+    parts = []
+
+    def part(group, name, kind, color, bom=None, mfr="", pn="", status="PROXY",
+             src="", notes="", qty_key=None, **geo):
+        d = dict(group=group, name=name, kind=kind, color=color, bom=bom or name,
+                 mfr=mfr, pn=pn, status=status, src=src, notes=notes, **geo)
+        d["qty_key"] = qty_key or d["bom"]
+        parts.append(d)
+        return d
+
+    # ---------------- derived geometry ----------------
+    mr = P["MAST_OD"] / 2.0
+    W, H, D, Hb, t = P["ENC_W"], P["ENC_H"], P["ENC_D"], P["ENC_BASE_D"], P["ENC_WALL"]
+    SADDLE = 20.0
+    ADAPT_T = 5.0
+    EY = mr + SADDLE + ADAPT_T             # enclosure back face (world Y)
+    EZ = P["ENC_Z0"]
+    EX = 0.0
+
+    def E(x, y, z):                        # enclosure-local -> world
+        return (EX + x, EY + y, EZ + z)
+
+    PW, PH, PT = P["PLATE_W"], P["PLATE_H"], P["PLATE_T"]
+    plate_y0 = t + P["PLATE_BOSS"]          # plate back face (local y)
+    plate_y1 = plate_y0 + PT                # plate front face
+    plate_z0 = (H - PH) / 2.0               # plate bottom (local z)
+
+    def PL(px, pz, h=0.0):                 # plate coords -> world point
+        return E(-PW / 2.0 + px, plate_y1 + h, plate_z0 + pz)
+
+    def pbox(group, name, px, pz, w, hh, h0, thick, color, **kw):
+        """board / block on the plate: w along X, hh along Z, thickness along Y."""
+        return part(group, name, "box", color, p0=PL(px, pz, h0), size=(w, thick, hh), **kw)
+
+    G1, G2, G3 = "01_Solar_Assembly", "02_Mast_and_Base", "03_Electronics_Enclosure"
+    G4, G5, G6 = "04_Air_TRH_Sensor_Head", "05_Water_Level_Sensing", "06_Soil_Sensing"
+    G7, G8 = "07_Cables_and_Connectors", "08_Reference_Volumes"
+
+    # =================== 02 MAST & BASE ===================
+    zb = -P["MAST_EMBED"]
+    part(G2, "Mast_GI_Pipe_60x3.65", "tube", C["galv"], bom="Mast, GI pipe 60.3 x 3.65 (IS 1239 50NB medium)",
+         mfr="Local / IS 1239", pn="50NB-M x %d mm" % (P["MAST_ABOVE"] + P["MAST_EMBED"]), status="CUSTOM",
+         src="IS 1239-1 nominal size", notes="Cut length = above-ground + embedment. Wind check in README.",
+         base=(0, 0, zb), dir=(0, 0, 1), ro=mr, ri=mr - P["MAST_WALL"], h=P["MAST_ABOVE"] + P["MAST_EMBED"])
+    part(G2, "Mast_Top_Cap_Plate", "box", C["galv"], bom="Mast top cap / panel base plate 160x160x8",
+         status="CUSTOM", notes="Welded to mast top, carries hinge lugs. Seals pipe.",
+         p0=(-80, -80, P["MAST_ABOVE"]), size=(160, 160, 8))
+    fw = P["FOOT_W"]
+    part(G2, "Concrete_Footing", "box", C["concrete"], bom="Concrete footing M20, 300x300x650",
+         status="CUSTOM", notes="Plain M20 concrete, crown 50 mm proud, sloped top recommended.",
+         p0=(-fw / 2, -fw / 2, -P["FOOT_DEPTH"]), size=(fw, fw, P["FOOT_DEPTH"] + P["FOOT_PROUD"]),
+         holes=[((0, 0, zb + (P["MAST_EMBED"] + P["FOOT_PROUD"]) / 2.0), (0, 0, 1), mr + 0.5, P["MAST_EMBED"] + P["FOOT_PROUD"] + 1)])
+    part(G2, "Anti_Rotation_Bar", "cyl", C["steel"], bom="Anti-rotation bar 12 mm through mast",
+         status="CUSTOM", notes="12 mm rebar through drilled mast, cast in footing.",
+         base=(-110, 0, -350), dir=(1, 0, 0), r=6, h=220)
+
+    # Enclosure adapter plate + saddles + U-bolts
+    az0, az1 = EZ - 55, EZ + H + 50
+    part(G2, "Enclosure_Adapter_Plate_Al5", "box", C["alu"], bom="Enclosure adapter plate Al 5 mm 170 x 360",
+         status="CUSTOM", notes="Fibox wall lugs FP 22046 screw to this plate. U-bolt holes above/below the enclosure.",
+         p0=(-85, EY - ADAPT_T, az0), size=(170, ADAPT_T, az1 - az0),
+         holes=[((x, EY - ADAPT_T / 2, z), (0, 1, 0), 4.5, ADAPT_T + 2) for x in (-mr - 4, mr + 4) for z in (EZ - 30, EZ + H + 25)])
+    for i, zc in enumerate((EZ - 30, EZ + H + 25)):
+        tag = "Lower" if i == 0 else "Upper"
+        part(G2, "Saddle_Block_%s" % tag, "box", C["alu"], bom="Pipe saddle block Al 70x20x40",
+             status="CUSTOM", notes="Spacer between pipe and adapter plate; V-notch optional.",
+             p0=(-35, mr, zc - 20), size=(70, SADDLE, 40))
+        part(G2, "U_Bolt_M8_%s_Bow" % tag, "box", C["steel"], bom="U-bolt M8 for 60 mm pipe (SS304)",
+             mfr="Generic", pn="U-bolt M8, 60 mm ID", status="PROXY",
+             notes="Bow simplified to a bar for envelope.", qty_key="U-bolt",
+             p0=(-mr - 8, -mr - 8, zc - 4), size=(2 * mr + 16, 8, 8))
+        for sx in (-1, 1):
+            part(G2, "U_Bolt_M8_%s_Leg_%s" % (tag, "L" if sx < 0 else "R"), "cyl", C["steel"],
+                 bom="U-bolt leg", status="PROXY", qty_key="_hidden",
+                 base=(sx * (mr + 4), -mr - 4, zc), dir=(0, 1, 0), r=4, h=mr + 4 + EY + 8)
+            part(G2, "U_Bolt_Nut_%s_%s" % (tag, "L" if sx < 0 else "R"), "cyl", C["steel"],
+                 bom="M8 nyloc nut + washer", status="PROXY", qty_key="_hidden",
+                 base=(sx * (mr + 4), EY, zc), dir=(0, 1, 0), r=7, h=8)
+
+    # Fibox wall lugs (4)
+    for sx in (-1, 1):
+        for sz, zz in ((-1, EZ - 35), (1, EZ + H)):
+            part(G2, "Fibox_Wall_Lug_FP22046_%s%s" % ("L" if sx < 0 else "R", "B" if sz < 0 else "T"), "box",
+                 C["enc"], bom="Fibox wall fastening lug FP 22046", mfr="Fibox", pn="FP 22046 (set of 4)",
+                 status="DATASHEET", src="fibox.com product 6011329 accessories: 35x16x10 mm",
+                 notes="Position along edge approximate - check lug seat on enclosure STEP.",
+                 qty_key="Fibox wall fastening lug FP 22046",
+                 p0=(sx * 62 - 8, EY, zz), size=(16, 10, 35))
+
+    # =================== 01 SOLAR ===================
+    z_cap = P["MAST_ABOVE"] + 8.0
+    hinge_z = z_cap + 50.0
+    for sx in (-1, 1):
+        part(G1, "Hinge_Lug_%s" % ("L" if sx < 0 else "R"), "box", C["galv"], bom="Hinge lug plate 8 mm",
+             status="CUSTOM", notes="Welded to cap plate; 35 mm bore = bearing for 33.7 hinge tube, M10 clamp bolt.", qty_key="Hinge lug plate 8 mm",
+             p0=(sx * 40 - 4, -30, z_cap), size=(8, 60, 80),
+             holes=[((sx * 40, 0, hinge_z), (1, 0, 0), 17.5, 10)])
+    LPan, WPan, TPan = P["PANEL_L"], P["PANEL_WD"], P["PANEL_T"]
+    tilt = [((1, 0, 0), -P["PANEL_TILT"], (0, 0, hinge_z))]
+    ht_r = 16.85
+    rail_x = LPan / 2 - P["PANEL_RAIL_INSET"]
+    part(G1, "Panel_Hinge_Tube_33.7", "cyl", C["galv"], bom="Hinge cross tube 33.7 x 3.2", status="CUSTOM",
+         notes="Rotates in the 35 mm lug bores; rails clamp to it; locked by tilt struts.",
+         base=(-rail_x - 30, 0, hinge_z), dir=(1, 0, 0), r=ht_r, h=2 * rail_x + 60)
+    rail_z = hinge_z + ht_r
+    for sx in (-1, 1):
+        part(G1, "Panel_Rail_Al_40x40_%s" % ("L" if sx < 0 else "R"), "box", C["alu"],
+             bom="Panel rail Al angle 40x40x4", status="CUSTOM",
+             notes="Length = panel slope width. Drill to panel frame holes (verify on delivered panel).",
+             qty_key="Panel rail Al angle 40x40x4",
+             p0=(sx * rail_x - 20, -WPan / 2, rail_z), size=(40, WPan, 40), rot=tilt)
+    pz0 = rail_z + 40
+    part(G1, "Solar_Panel_20W_Frame", "box", C["frame"], bom="Solar panel 20 Wp 12 V",
+         mfr="WAAREE", pn="WS-20-12V (PROVISIONAL)", status="PROXY",
+         src="WAAREE shop 516x460x40 / L&T-SuFin 485x350x22 (Voc 21.17 V) - CONFLICT",
+         notes="PROVISIONAL PANEL - SKU/size not verified. Set PANEL_L/WD/T.",
+         p0=(-LPan / 2, -WPan / 2, pz0), size=(LPan, WPan, TPan - 3), rot=tilt)
+    part(G1, "Solar_Panel_Cells_Glass", "box", C["pv"], bom="(panel glass)", status="PROXY", qty_key="_hidden",
+         p0=(-LPan / 2 + 12, -WPan / 2 + 12, pz0 + TPan - 3), size=(LPan - 24, WPan - 24, 3), rot=tilt)
+    jb_p0 = (-40, -WPan / 2 + 40, pz0 - 18)
+    part(G1, "Panel_Junction_Box", "box", C["black"], bom="(panel junction box)", status="PROXY", qty_key="_hidden",
+         p0=jb_p0, size=(80, 60, 18), rot=tilt)
+    # tilt struts
+    for sx in (-1, 1):
+        a = (sx * 60, -70, z_cap)
+        b = rot_point((sx * rail_x, -WPan / 2 + 30, rail_z), (1, 0, 0), -P["PANEL_TILT"], (0, 0, hinge_z))
+        dv = (b[0] - a[0], b[1] - a[1], b[2] - a[2])
+        ln = math.sqrt(sum(c * c for c in dv))
+        part(G1, "Tilt_Strut_%s" % ("L" if sx < 0 else "R"), "cyl", C["galv"], bom="Tilt strut 16 mm, slotted",
+             status="CUSTOM", notes="Slotted flat bar / rod sets tilt 10-30 deg. Length shown at current tilt.",
+             qty_key="Tilt strut 16 mm, slotted", base=a, dir=dv, r=8, h=ln)
+
+    # =================== 03 ENCLOSURE ===================
+    lid_dy = P["LID_EXPLODE"]
+    part(G3, "Fibox_PC200_150_HG_Base", "tray", C["enc"], bom="Enclosure Fibox MNX PC 200/150 HG",
+         mfr="Fibox", pn="6011329", status="DATASHEET",
+         src="fibox.com/products/MNX/PC-ABS-200H/6011329 : 255x180x150, IP66/IP67, IK08, PC",
+         notes="External size verified. Base/cover split, wall and boss positions PROVISIONAL - "
+               "replace with 6011329_FIBOX_MNX_PC_200_150_HG.step (Fibox login).",
+         p0=E(-W / 2, 0, 0), size=(W, Hb, H), t=t, open="+y",
+         holes=[(E(gx, GLAND_Y, t / 2), (0, 0, 1), {"M20": 10.25, "M16": 8.25, "M12V": 6.25}[k], t + 2)
+                for gx, k, _, _ in G] + [(E(50, 60, H - t / 2), (0, 0, 1), 3.4, t + 2)])
+    part(G3, "Fibox_PC200_150_HG_Cover", "tray", C["lid"], bom="(enclosure cover)", status="DATASHEET",
+         qty_key="_hidden", notes="Screw cover (4 polyamide screws). MNX PC has NO hinges.",
+         p0=E(-W / 2, Hb + lid_dy, 0), size=(W, D - Hb, H), t=t, open="-y")
+    for sx in (-1, 1):
+        for zz in (t + 5.5, H - t - 5.5):
+            part(G3, "Cover_Screw_Column_%s_%d" % ("L" if sx < 0 else "R", int(zz)), "cyl", C["enc"],
+                 bom="(cover screw column)", status="PROXY", qty_key="_hidden",
+                 base=E(sx * (W / 2 - t - 5.5), t, zz), dir=(0, 1, 0), r=5.5, h=Hb - t)
+            part(G3, "Cover_Screw_Head_%s_%d" % ("L" if sx < 0 else "R", int(zz)), "cyl", C["lid"],
+                 bom="(cover screw)", status="PROXY", qty_key="_hidden",
+                 base=E(sx * (W / 2 - t - 5.5), D + lid_dy, zz), dir=(0, 1, 0), r=4.5, h=2.5)
+    # plate + bosses + fixing screws
+    hi = P["PLATE_HOLE_INSET"]
+    corners = [(hi, hi), (PW - hi, hi), (hi, PH - hi), (PW - hi, PH - hi)]
+    plate_holes = []      # (px, pz, dia, label) collected for the DXF / FreeCAD cuts
+    for (cx, cz) in corners:
+        plate_holes.append((cx, cz, 4.5, "Plate fixing M4 (PROVISIONAL - match Fibox bosses)"))
+        part(G3, "Plate_Boss_%d_%d" % (cx, cz), "cyl", C["enc"], bom="(moulded boss)", status="PROXY", qty_key="_hidden",
+             base=E(-PW / 2 + cx, t, plate_z0 + cz), dir=(0, 1, 0), r=4.5, h=P["PLATE_BOSS"])
+        part(G3, "Plate_Screw_%d_%d" % (cx, cz), "cyl", C["metal"], bom="Plate screw (supplied with base)",
+             mfr="Fibox", status="PROXY", qty_key="Plate screw (supplied with base)",
+             base=PL(cx, cz, 0), dir=(0, 1, 0), r=3.5, h=3)
+
+    def std(name, px, pz, h, n_qty=True, r=2.75):
+        sz_ = "M3" if r > 2 else "M2"
+        part(G3, name, "cyl", C["metal"], bom="Standoff %s x %g (brass/nylon)" % (sz_, h), status="PROXY",
+             qty_key=("Standoff %s x %g" % (sz_, h)) if n_qty else "_hidden",
+             base=PL(px, pz, 0), dir=(0, 1, 0), r=r, h=h)
+        plate_holes.append((px, pz, 3.2 if r > 2 else 2.2, name))
+
+    # --- Battery
+    bx, bz = L["battery"]
+    part(G3, "Battery_Rubber_Pad_3mm", "box", C["rubber"], bom="EPDM pad 3 mm 65x151", status="CUSTOM",
+         p0=PL(bx, bz, 0), size=(P["BATT_W"], 3, P["BATT_L"]))
+    part(G3, "Battery_LiFePO4_12V8_6Ah", "box", C["batt"], bom="Battery LiFePO4 12.8 V 6 Ah (76.8 Wh)",
+         mfr="Himax (candidate)", pn="12.8V 6Ah - SKU NOT VERIFIED", status="PROXY",
+         src="Himax-class 151x65x94 envelope", notes="Terminal face toward cover. Confirm terminal type/positions.",
+         p0=PL(bx, bz, 3), size=(P["BATT_W"], P["BATT_H"], P["BATT_L"]))
+    bt_y = 3 + P["BATT_H"]
+    for nm, dx, col in (("Pos", 16, C["red"]), ("Neg", P["BATT_W"] - 16, C["black"])):
+        part(G3, "Battery_Terminal_%s" % nm, "cyl", col, bom="(battery terminal)", status="PROXY", qty_key="_hidden",
+             base=PL(bx + dx, bz + P["BATT_L"] - 15, bt_y), dir=(0, 1, 0), r=4, h=6)
+    for i, sz in enumerate((30, 100)):
+        part(G3, "Battery_Strap_%d" % (i + 1), "box", C["black"], bom="Hook-and-loop strap 25 mm",
+             status="PROXY", qty_key="Hook-and-loop strap 25 mm",
+             p0=PL(bx - 2, bz + sz, bt_y), size=(P["BATT_W"] + 4, 1.5, 25))
+    # strap slots in plate (FreeCAD cuts)
+    strap_slots = [(bx - 5, bz + sz - 0.5, 3, 26) for sz in (30, 100)] + \
+                  [(bx + P["BATT_W"] + 2, bz + sz - 0.5, 3, 26) for sz in (30, 100)]
+    cx0, cz0 = L["cradle"]
+    part(G3, "Battery_Cradle_Flange", "box", C["alu"], bom="Battery cradle, Al 2 mm bent", status="CUSTOM",
+         notes="Flange screwed to plate (2x M3), shelf supports battery bottom.",
+         p0=PL(cx0, cz0, 0), size=(69, 2, 12))
+    part(G3, "Battery_Cradle_Shelf", "box", C["alu"], bom="(cradle shelf)", status="CUSTOM", qty_key="_hidden",
+         p0=PL(cx0, bz - 3, 2), size=(69, 49, 3))
+    plate_holes += [(cx0 + 12, cz0 + 6, 3.2, "Cradle M3"), (cx0 + 57, cz0 + 6, 3.2, "Cradle M3")]
+
+    # --- Genasun GV-5
+    gx, gz = L["gv5"]
+    part(G3, "Genasun_GV5_Li_14V2_MPPT", "box", C["black"], bom="Solar charge controller Genasun GV-5-Li-14.2V",
+         mfr="Genasun", pn="GV-5-Li-14.2V", status="DATASHEET",
+         src="Genasun/Sunforge: 4.3 x 2.2 x 1.14 in (110 x 56 x 29 mm), 80 g, 6-pos terminal",
+         notes="Outline verified; mounting-hole positions PROXY - use Genasun .stp. Earlier 74x46 figure was wrong.",
+         p0=PL(gx, gz, 0), size=(P["GV5_W"], P["GV5_H"], P["GV5_L"]))
+    part(G3, "GV5_Terminal_Block_6pos", "box", C["term_grn"], bom="(GV-5 terminal block)", status="PROXY",
+         qty_key="_hidden", p0=PL(gx + 6, gz - 0.01, P["GV5_H"]), size=(P["GV5_W"] - 12, 4, 12))
+    plate_holes += [(gx + P["GV5_W"] / 2, gz + 5, 4.3, "GV-5 M4 (PROXY)"),
+                    (gx + P["GV5_W"] / 2, gz + P["GV5_L"] - 5, 4.3, "GV-5 M4 (PROXY)")]
+
+    # --- Pololu regulators
+    rx, rz = L["reg5"]
+    for sx, sz in ((-1, -1), (1, 1)):
+        std("Standoff_M2_Reg5_%d" % (sx + 2), rx + 8.9 + sx * 6.73, rz + 10.15 + sz * 8.0, 4, r=2.0)
+    part(G3, "Pololu_D24V50F5_PCB", "box", C["pcb_grn"], bom="5 V regulator Pololu D24V50F5 (5 A)",
+         mfr="Pololu", pn="#2851 D24V50F5", status="DATASHEET",
+         src="pololu.com/product/2851: 0.7 x 0.8 x 0.35 in (17.8 x 20.3 x 8.8), 2x M2 holes 0.53 x 0.63 in",
+         notes="STEP + drill DXF on Pololu page - swap in.", p0=PL(rx, rz, 4), size=(17.8, 1.6, 20.3))
+    part(G3, "Pololu_D24V50F5_Components", "box", C["black"], bom="(regulator components)", status="PROXY",
+         qty_key="_hidden", p0=PL(rx + 1.5, rz + 2, 5.6), size=(14.8, 7.2, 14))
+    r3x, r3z = L["reg33"]
+    for sx in (-1, 1):
+        std("Standoff_M2_Reg33_%d" % (sx + 2), r3x + 8.9 + sx * 6.6, r3z + 8.9 + sx * 6.6, 4, r=2.0)
+    part(G3, "Pololu_D24V22F3_PCB", "box", C["pcb_grn"], bom="3.3 V regulator Pololu D24V22F3 (2.6 A)",
+         mfr="Pololu", pn="#2857 D24V22F3", status="DATASHEET",
+         src="pololu.com D24V22Fx: 0.7 x 0.7 in (17.8 x 17.8), hole spacing per drill DXF",
+         notes="Hole pattern PROXY (diagonal) - confirm with Pololu drill guide.",
+         p0=PL(r3x, r3z, 4), size=(17.8, 1.6, 17.8))
+    part(G3, "Pololu_D24V22F3_Components", "box", C["black"], bom="(regulator components)", status="PROXY",
+         qty_key="_hidden", p0=PL(r3x + 1.5, r3z + 2, 5.6), size=(14.8, 4.5, 13.8))
+
+    # --- ESP32 carrier + DevKitC V4
+    ex, ez = L["esp_carrier"]
+    CW, CH = 64.0, 34.0
+    for (dx, dz) in ((4, 4), (CW - 4, 4), (4, CH - 4), (CW - 4, CH - 4)):
+        std("Standoff_M3_ESPcarrier_%d_%d" % (dx, dz), ex + dx, ez + dz, 6)
+    part(G3, "ESP32_Carrier_PCB", "box", C["pcb_grn"], bom="ESP32 carrier PCB 64x34 (perfboard / custom)",
+         status="CUSTOM", notes="2x 1x19 female headers, 5 V screw terminal, sensor connectors.",
+         p0=PL(ex, ez, 6), size=(CW, 1.6, CH))
+    rowsep = 25.4              # header row spacing (verify against Espressif layout)
+    bw, bh = 54.4, 27.9
+    bx0, bz0 = ex + (CW - bw) / 2, ez + (CH - bh) / 2
+    for i, dz in enumerate(((bh - rowsep) / 2, (bh + rowsep) / 2)):
+        part(G3, "ESP32_Female_Header_1x19_%s" % ("J2" if i == 0 else "J3"), "box", C["black"],
+             bom="Female header 1x19 2.54 mm", status="PROXY", qty_key="Female header 1x19 2.54 mm",
+             p0=PL(bx0 + (bw - 48.26) / 2, bz0 + dz - 1.27, 7.6), size=(48.26, 8.5, 2.54))
+    part(G3, "ESP32_DevKitC_V4_PCB", "box", C["pcb_blk"], bom="Controller Espressif ESP32-DevKitC V4",
+         mfr="Espressif", pn="ESP32-DevKitC-32E (V4) - verify variant", status="DATASHEET",
+         src="Espressif DevKitC V4: 54.4 x 27.9 mm incl. PCB antenna; 2x19 pins 2.54 mm",
+         notes="Header row spacing 25.4 mm assumed - CHECK. Keep metal >10 mm from PCB antenna end.",
+         p0=PL(bx0, bz0, 16.1), size=(bw, 1.6, bh))
+    part(G3, "ESP32_WROOM32E_Module", "box", C["metal"], bom="(WROOM module)", status="DATASHEET", qty_key="_hidden",
+         src="ESP32-WROOM-32E 18 x 25.5 x 3.1", p0=PL(bx0, bz0 + (bh - 18) / 2, 17.7), size=(25.5, 3.1, 18))
+    part(G3, "ESP32_MicroUSB", "box", C["metal"], bom="(USB connector)", status="PROXY", qty_key="_hidden",
+         p0=PL(bx0 + bw - 4.7, bz0 + bh / 2 - 3.9, 17.7), size=(5.7, 2.8, 7.8))
+
+    # --- E22 carrier
+    lx, lz = L["e22_carrier"]
+    for (dx, dz) in ((3.5, 3.5), (20.5, 22.5)):
+        std("Standoff_M3_E22carrier_%d" % dz, lx + dx, lz + dz, 6)
+    part(G3, "E22_Carrier_PCB", "box", C["pcb_blu"], bom="E22 carrier PCB 24x26 (custom)", status="CUSTOM",
+         notes="Breakout for SMD module: 2.54 mm headers, 100 uF bulk cap, u.FL.", p0=PL(lx, lz, 6), size=(24, 1.6, 26))
+    part(G3, "EBYTE_E22_900M22S", "box", C["metal"], bom="LoRa module EBYTE E22-900M22S (SX1262)",
+         mfr="EBYTE", pn="E22-900M22S", status="DATASHEET", src="EBYTE: 20 x 14 x 2.8 mm, 850-930 MHz, 22 dBm, 3.3 V",
+         notes="Configure IN865 (865-867 MHz) for India. Separate 3.3 V rail.",
+         p0=PL(lx + 5, lz + 3, 7.6), size=(14, 2.8, 20))
+    part(G3, "E22_uFL_Connector", "box", C["gold"], bom="(u.FL)", status="PROXY", qty_key="_hidden",
+         p0=PL(lx + 9, lz + 23.2, 10.4), size=(3, 1.25, 3))
+
+    # --- DFR0845
+    dx0, dz0 = L["dfr0845"]
+    for (ddx, ddz) in ((3.5, 3.5), (43.5, 3.5), (3.5, 33.5), (43.5, 33.5)):
+        std("Standoff_M3_DFR0845_%d_%d" % (ddx, ddz), dx0 + ddx, dz0 + ddz, 6)
+    part(G3, "DFRobot_DFR0845_RS485_Iso_PCB", "box", C["pcb_blu"], bom="Isolated RS485-UART DFRobot DFR0845",
+         mfr="DFRobot", pn="DFR0845", status="DATASHEET", src="Gotronic/DFRobot: 47 x 37 mm",
+         notes="Outline verified; hole positions PROXY (40x30) - check DFRobot dimension PDF.",
+         p0=PL(dx0, dz0, 6), size=(47, 1.6, 37))
+    part(G3, "DFR0845_Components", "box", C["black"], bom="(components)", status="PROXY", qty_key="_hidden",
+         p0=PL(dx0 + 10, dz0 + 8, 7.6), size=(24, 6, 21))
+    part(G3, "DFR0845_RS485_Terminal", "box", C["term_blu"], bom="(terminal)", status="PROXY", qty_key="_hidden",
+         p0=PL(dx0 + 36, dz0 + 6, 7.6), size=(9, 10, 22))
+
+    # --- power distribution
+    fx, fz = L["fuse"]
+    part(G3, "Fuse_Holder_3way_MiniBlade", "box", C["black"], bom="3-way mini blade fuse holder (PCB/panel)",
+         status="PROXY", notes="F1 battery 7.5 A, F2 5 V reg 5 A, F3 sensors 1 A (size to wire).",
+         p0=PL(fx, fz, 0), size=(40, 16, 14))
+    for i in range(3):
+        part(G3, "Fuse_%d" % (i + 1), "box", C["fuse"], bom="Mini blade fuse", status="PROXY", qty_key="Mini blade fuse",
+             p0=PL(fx + 4 + i * 12.5, fz + 3, 16), size=(9, 8, 8))
+    plate_holes += [(fx + 3, fz + 7, 3.2, "Fuse holder M3"), (fx + 37, fz + 7, 3.2, "Fuse holder M3")]
+    tx, tz = L["tstrip"]
+    part(G3, "Terminal_Strip_8way_5.08", "box", C["term_grn"], bom="Terminal strip 8-way 5.08 mm (+12/+5/+3V3)",
+         status="PROXY", p0=PL(tx, tz, 0), size=(41, 15, 10))
+    gbx, gbz = L["gndbus"]
+    part(G3, "GND_Bus_5way", "box", C["black"], bom="GND bus 5-way", status="PROXY",
+         p0=PL(gbx, gbz, 0), size=(24, 15, 10))
+    plate_holes += [(tx + 2.5, tz + 5, 3.2, "Terminal M3"), (tx + 38.5, tz + 5, 3.2, "Terminal M3"),
+                    (gbx + 2.5, gbz + 5, 3.2, "GND bus M3"), (gbx + 21.5, gbz + 5, 3.2, "GND bus M3")]
+
+    part(G3, "MIV200_Mounting_Plate", "box", C["plate"], bom="Mounting plate Fibox MIV 200 (galv. steel)",
+         mfr="Fibox", pn="5514080 MIV 200", status="DATASHEET", src="fibox.com 5514080: 223 x 148 x 1.5 mm",
+         notes="All component holes are drilled by you - see plate DXF.",
+         p0=E(-PW / 2, plate_y0, plate_z0), size=(PW, PT, PH),
+         holes=[(PL(hx, hz, -PT / 2), (0, 1, 0), dia / 2, PT + 2) for (hx, hz, dia, _) in plate_holes],
+         slots=[(PL(sx_, sz_, -PT - 1), (sw, PT + 2, sh)) for (sx_, sz_, sw, sh) in strap_slots])
+
+    # --- glands + vent
+    for gx_, kind, label, cable in G:
+        gbase = E(gx_, GLAND_Y, 0)
+        if kind == "M12V":
+            part(G7, "Vent_icotek_PCE12", "cyl", C["black"], bom="Pressure compensation element icotek PCE 12",
+                 mfr="icotek", pn="99190", status="PROXY", src="icotek PCE: M12 x 1.5, IP68, PA",
+                 notes="Envelope only - body dims not in datasheet text.",
+                 base=gbase, dir=(0, 0, -1), r=9, h=11)
+            part(G7, "Vent_Locknut_M12", "cyl", C["black"], bom="(locknut M12)", status="PROXY", qty_key="_hidden",
+                 base=E(gx_, GLAND_Y, t), dir=(0, 0, 1), r=8, h=4)
+            continue
+        big = kind == "M20"
+        rb, hb = (13.5, 12.0) if big else (11.0, 11.0)
+        part(G7, "Gland_%s_%s_Body" % (kind, label.split()[0]), "cyl", C["black"],
+             bom="Cable gland LAPP SKINTOP ST-M %s x 1.5" % kind[1:], mfr="LAPP",
+             pn="53111220" if big else "53111210 (verify)", status="DATASHEET" if big else "PROXY",
+             src="LAPP 53111220: M20x1.5, clamp 6-13 mm, PA, IP68/69" if big else "M16 variant: clamp 4.5-10 mm (verify)",
+             notes="Entry: %s - %s. Body envelope approximate." % (label, cable),
+             qty_key="Cable gland LAPP SKINTOP ST-M %s x 1.5" % kind[1:],
+             base=gbase, dir=(0, 0, -1), r=rb, h=hb)
+        part(G7, "Gland_%s_%s_Dome" % (kind, label.split()[0]), "cone", C["black"], bom="(gland dome)",
+             status="PROXY", qty_key="_hidden",
+             base=_add(gbase, (0, 0, -hb)), dir=(0, 0, -1), r1=rb - 1.5, r2=rb - 4.5, h=14 if big else 12)
+        part(G7, "Gland_%s_%s_Locknut" % (kind, label.split()[0]), "cyl", C["black"],
+             bom="Locknut SKINTOP GMP-GL-M %s" % kind[1:], status="PROXY", qty_key="Locknut SKINTOP GMP-GL-M %s" % kind[1:],
+             base=E(gx_, GLAND_Y, t), dir=(0, 0, 1), r=13 if big else 11, h=5)
+
+    # --- antenna
+    ab = E(50, 60, H)
+    part(G7, "SMA_Bulkhead_Jack_IP67", "cyl", C["gold"], bom="SMA bulkhead jack IP67 + O-ring, u.FL pigtail 200 mm",
+         status="PROXY", notes="Top-face entry: O-ring outside, nut inside. Or move to side wall.",
+         base=ab, dir=(0, 0, 1), r=5.5, h=8)
+    part(G7, "SMA_Bulkhead_Nut_Inside", "cyl", C["gold"], bom="(bulkhead nut)", status="PROXY", qty_key="_hidden",
+         base=E(50, 60, H - t), dir=(0, 0, -1), r=6.5, h=3)
+    part(G7, "Antenna_ANT868_CW_HW_Base", "cyl", C["black"], bom="Antenna TE/Linx ANT-868-CW-HW-SMA",
+         mfr="TE Connectivity / Linx", pn="ANT-868-CW-HW-SMA", status="DATASHEET",
+         src="Linx data sheet: 135.5 mm long, 10.7 mm max dia, 855-880 MHz, 1/2-wave",
+         notes="Base/whip split approximate; overall length + max dia per datasheet.",
+         base=_add(ab, (0, 0, 8)), dir=(0, 0, 1), r=5.35, h=15.5)
+    part(G7, "Antenna_ANT868_Whip", "cone", C["black"], bom="(antenna whip)", status="DATASHEET", qty_key="_hidden",
+         base=_add(ab, (0, 0, 23.5)), dir=(0, 0, 1), r1=4.05, r2=2.8, h=120.0)
+    part(G7, "uFL_to_SMA_Pigtail", "cable", C["coax"], bom="(pigtail)", status="REFERENCE", qty_key="_hidden",
+         pts=[E(50, 60, H - t - 3), E(50, 60, 75), E(-9, 60, 70), PL(lx + 10.5, lz + 24.5, 12)], r=1.0)
+
+    # =================== 04 AIR T/RH ===================
+    thz, thl = P["TH_ARM_Z"], P["TH_ARM_LEN"]
+    part(G4, "TRH_Arm_Clamp", "box", C["galv"], bom="Arm clamp for 60 mm pipe (2-piece)", status="CUSTOM",
+         notes="Two-piece clamp, 2x M8. Same design for both sensor arms.", qty_key="Arm clamp for 60 mm pipe (2-piece)",
+         p0=(-mr - 12, -mr - 6, thz - 25), size=(2 * mr + 24, 2 * mr + 12, 50))
+    part(G4, "TRH_Arm_Tube_26.9", "cyl", C["galv"], bom="Arm tube 26.9 x 2.6 (20NB)", status="CUSTOM",
+         qty_key="Arm tube 26.9 x 2.6 (20NB)", base=(-mr - 12, 0, thz), dir=(-1, 0, 0), r=13.45, h=thl - mr - 12 + 20)
+    shc = (-thl, 0.0)
+    part(G4, "TRH_Shield_Bracket", "box", C["galv"], bom="Shield bracket flat 30x6", status="CUSTOM",
+         p0=(shc[0] - 15, -3, thz - 13.45 - 22), size=(30, 6, 22))
+    top = thz - 13.45 - 22
+    part(G4, "Radiation_Shield_Top_Cap", "cone", C["white"], bom="Radiation shield 7-plate, dia 120 x 140",
+         mfr="Generic / select model", status="PROXY", notes="Pick real shield; keep >= 1.25 m above crop canopy.",
+         base=(shc[0], shc[1], top - 12), dir=(0, 0, 1), r1=60, r2=20, h=12)
+    for i in range(6):
+        zt = top - 12 - (i + 1) * 21
+        part(G4, "Radiation_Shield_Plate_%d" % (i + 1), "ringcone", C["white"], bom="(shield plate)", status="PROXY",
+             qty_key="_hidden", base=(shc[0], shc[1], zt), dir=(0, 0, 1), ro1=60, ro2=46, ri=22, h=9)
+    for k in range(3):
+        a = math.radians(90 + 120 * k)
+        part(G4, "Shield_Rod_%d" % (k + 1), "cyl", C["metal"], bom="(shield rod M4)", status="PROXY", qty_key="_hidden",
+             base=(shc[0] + 34 * math.cos(a), shc[1] + 34 * math.sin(a), top - 140), dir=(0, 0, 1), r=2, h=128)
+    part(G4, "Air_TRH_Sensor_Probe", "cyl", C["metal"], bom="Air T/RH sensor (SHT31/SHT35 class, sealed probe)",
+         status="PROXY", notes="Model not selected. Probe sits mid-stack, cable exits top.",
+         base=(shc[0], shc[1], top - 105), dir=(0, 0, 1), r=6, h=55)
+
+    # =================== 05 WATER LEVEL ===================
+    usz, usl = P["US_ARM_Z"], P["US_ARM_LEN"]
+    part(G5, "US_Arm_Clamp", "box", C["galv"], bom="Arm clamp for 60 mm pipe (2-piece)", status="CUSTOM",
+         qty_key="Arm clamp for 60 mm pipe (2-piece)", p0=(-mr - 12, -mr - 6, usz - 25), size=(2 * mr + 24, 2 * mr + 12, 50))
+    part(G5, "US_Arm_Tube_26.9", "cyl", C["galv"], bom="Arm tube 26.9 x 2.6 (20NB)", status="CUSTOM",
+         qty_key="Arm tube 26.9 x 2.6 (20NB)", base=(mr + 12, 0, usz), dir=(1, 0, 0), r=13.45, h=usl - mr - 12 + 20)
+    part(G5, "US_Sensor_Bracket", "box", C["galv"], bom="Ultrasonic bracket, slotted (height adjust)", status="CUSTOM",
+         notes="Vertical slot gives +/-50 mm height adjust.", p0=(usl - 20, -20, usz - 13.45 - 4), size=(40, 40, 4))
+    s_top = usz - 13.45 - 4
+    part(G5, "DFRobot_SEN0311_A02YYUW_Body", "box", C["black"], bom="Water level sensor DFRobot SEN0311 (A02YYUW)",
+         mfr="DFRobot", pn="SEN0311", status="PROXY",
+         src="DFRobot: 3-450 cm, 3 cm blind, 60 deg, IP67, UART; reseller: 84.5 x 30 x 19 mm, 30 cm lead",
+         notes="Envelope from reseller size only - verify on part. 30 cm lead needs a sealed extension.",
+         p0=(usl - 15, -9.5, s_top - 59.5), size=(30, 19, 59.5))
+    part(G5, "SEN0311_Transducer", "cyl", C["black"], bom="(transducer)", status="PROXY", qty_key="_hidden",
+         base=(usl, 0, s_top - 59.5), dir=(0, 0, -1), r=14, h=25)
+    face_z = s_top - 84.5
+    part(G8, "REF_Ultrasonic_FOV_Cone_60deg", "cone", C["fov"], bom="(reference)", status="REFERENCE", qty_key="_hidden",
+         notes="Keep this cone free of mast, crop leaves, brackets. Ground = worst case (dry field).",
+         base=(usl, 0, 0), dir=(0, 0, 1), r1=face_z * math.tan(math.radians(P["US_HALF_ANGLE"])), r2=0.5, h=face_z)
+
+    # =================== 06 SOIL ===================
+    sx_, sy_, stz = P["SOIL_X"], P["SOIL_Y"], P["SOIL_TOP_Z"]
+    part(G6, "DFRobot_SEN0602_Body", "box", C["black"], bom="Soil probe DFRobot SEN0602 (RS485: moisture, temp, pH)",
+         mfr="DFRobot", pn="SEN0602", status="PROXY",
+         src="DFRobot wiki: overall 127 x 45 x 15 mm, 316SS, IP68, 5-30 V, 2 m cable",
+         notes="Measures moisture/temperature/pH - NOT EC. Body/needle split approximate.",
+         p0=(sx_ - 22.5, sy_ - 7.5, stz - 60), size=(45, 15, 60))
+    for k, dx in enumerate((-14, 0, 14)):
+        part(G6, "SEN0602_Needle_%d" % (k + 1), "cyl", C["metal"], bom="(probe needle)", status="PROXY", qty_key="_hidden",
+             base=(sx_ + dx, sy_, stz - 60), dir=(0, 0, -1), r=1.5, h=67)
+    part(G6, "Soil_Probe_Marker_Stake", "box", C["orange"], bom="Probe marker / cable stake", status="CUSTOM",
+         p0=(sx_ + 30, sy_ - 10, 0), size=(20, 20, 300))
+
+    # =================== 07 CABLE ROUTES (reference sweeps) ===================
+    cr = P["CABLE_D"] / 2.0
+    yt = -mr - 20.0              # cable trunk behind the mast (-Y side, away from arms)
+    drip = EZ - 140
+    jb_mid = rot_point((0, -WPan / 2 + 70, pz0 - 18), (1, 0, 0), -P["PANEL_TILT"], (0, 0, hinge_z))
+
+    def gl(i):
+        return E(G[i][0], GLAND_Y, -30)
+
+    def to_gland(i, xt, zd, xs):
+        """trunk (xt, yt) -> around mast at x = xs -> drip loop under gland i -> up into gland."""
+        g = gl(i)
+        return [(xt, yt, zd), (xs, 0, zd), (g[0], g[1], zd), g]
+    # trunk row behind the mast: x slots ordered by exit side / drip height so no cable crosses another
+    yb = yt - 15.0               # "behind the row" travel lane for feeders
+    part(G7, "Cable_Solar_PV", "cable", C["cable"], bom="PV cable 2 x 2.5 mm2 (UV)", status="REFERENCE",
+         notes="Drip loop below enclosure before every gland.",
+         pts=[jb_mid, (jb_mid[0], -110, z_cap - 30), (-15, yt, z_cap - 80)] + to_gland(0, -15, drip, -mr - 40), r=cr)
+    part(G7, "Cable_Air_TRH", "cable", C["cable"], bom="Sensor cable 4-core shielded", status="REFERENCE",
+         qty_key="Sensor cable 4-core shielded",
+         pts=[(shc[0], 0, top - 50), (shc[0], 0, top - 18), (shc[0] + 70, 0, top - 18), (shc[0] + 70, 22, thz),
+              (-mr - 30, 22, thz), (-mr - 30, 22, thz + 35), (-mr - 30, yb, thz + 35), (15, yb, thz + 35),
+              (15, yt, thz + 25)] + to_gland(3, 15, drip - 50, mr + 55), r=cr - 1)
+    part(G7, "Cable_Water_Level", "cable", C["cable"], bom="(sensor cable)", status="REFERENCE",
+         qty_key="Sensor cable 4-core shielded",
+         pts=[(usl, 0, s_top - 2), (usl, 30, s_top - 2), (usl, 30, usz), (60, 30, usz), (60, 30, usz + 35),
+              (60, yb, usz + 35), (5, yb, usz + 35), (5, yt, usz + 45)] + to_gland(2, 5, drip - 75, mr + 25), r=cr - 1)
+    part(G7, "Cable_Soil_Probe", "cable", C["cable"], bom="(sensor cable)", status="REFERENCE",
+         qty_key="Sensor cable 4-core shielded",
+         pts=[(sx_, sy_ + 10, stz - 5), (sx_, 70, -20), (-fw / 2 - 15, 70, -20), (-fw / 2 - 15, 70, P["FOOT_PROUD"] + 10),
+              (-fw / 2 - 15, yb, P["FOOT_PROUD"] + 10), (-5, yb, P["FOOT_PROUD"] + 10), (-5, yt, P["FOOT_PROUD"] + 25)]
+             + to_gland(1, -5, drip - 25, -mr - 25), r=cr - 1)
+    part(G7, "Conduit_Soil_Cable_Ground", "box", C["orange"], bom="Ground conduit / cable cover (HDPE)",
+         status="CUSTOM", notes="Protects soil-probe cable from tractors/rats. Not modelled along full path.",
+         p0=(sx_ + 10, 50, -40), size=(-sx_ - fw / 2 - 25, 40, 40))
+
+    # reference volumes
+    part(G8, "REF_Cover_Service_Clearance", "box", C["fov"], bom="(reference)", status="REFERENCE", qty_key="_hidden",
+         notes="Keep 200 mm clear in front of the cover for screwdriver + hands.",
+         p0=E(-W / 2, D + 2 + lid_dy, 0), size=(W, 200, H))
+    part(G8, "REF_Lid_Internal_Clearance", "box", C["fov"], bom="(reference)", status="REFERENCE", qty_key="_hidden",
+         notes="Nothing on the plate may enter this slab (cover internal depth).",
+         p0=E(-W / 2 + t, D - t - 15, t), size=(W - 2 * t, 15, H - 2 * t))
+
+    meta = dict(EY=EY, EZ=EZ, plate_holes=plate_holes, strap_slots=strap_slots, plate_y1=plate_y1,
+                plate_z0=plate_z0, face_z=face_z, hinge_z=hinge_z)
+    return parts, meta
+
+
+# ---------------------------------------------------------------------------
+# 4. FREECAD BUILDER
+# ---------------------------------------------------------------------------
+def _read_params_from_sheet(doc):
+    sheet = doc.getObject("Params")
+    if sheet is None:
+        return
+    for k in list(P.keys()):
+        try:
+            v = sheet.get(k)
+            P[k] = float(getattr(v, "Value", v))
+        except Exception:
+            pass
+
+
+def _write_params_sheet(doc):
+    sh = doc.getObject("Params") or doc.addObject("Spreadsheet::Sheet", "Params")
+    sh.set("A1", "Parameter"); sh.set("B1", "Value"); sh.set("C1", "Note")
+    notes = {"ENC_BASE_D": "PROVISIONAL - verify", "ENC_WALL": "PROVISIONAL", "PLATE_BOSS": "PROVISIONAL",
+             "PANEL_L": "PROVISIONAL panel (516/485)", "PANEL_WD": "PROVISIONAL panel (460/350)",
+             "PANEL_T": "PROVISIONAL panel (40/22)", "PANEL_TILT": "deg", "US_HALF_ANGLE": "deg",
+             "BATT_L": "PROXY battery", "LID_EXPLODE": "0 = closed"}
+    for i, (k, v) in enumerate(P.items(), start=2):
+        sh.set("A%d" % i, k)
+        sh.set("B%d" % i, str(v))
+        try:
+            sh.setAlias("B%d" % i, k)
+        except Exception:
+            pass
+        sh.set("C%d" % i, notes.get(k, "mm"))
+    return sh
+
+
+def _write_bom_sheet(doc, rows):
+    sh = doc.getObject("BOM") or doc.addObject("Spreadsheet::Sheet", "BOM")
+    hdr = ["Item", "Qty", "Manufacturer", "Part number", "Status", "Source / verification", "Notes"]
+    for j, hname in enumerate(hdr):
+        sh.set("%s1" % chr(65 + j), hname)
+    for i, r in enumerate(rows, start=2):
+        for j, key in enumerate(["bom", "qty", "mfr", "pn", "status", "src", "notes"]):
+            val = str(r[key]).replace("=", "-")
+            sh.set("%s%d" % (chr(65 + j), i), "'" + val if j != 1 else val)
+    return sh
+
+
+def bom_rows(parts):
+    rows, seen = [], {}
+    for p in parts:
+        k = p["qty_key"]
+        if k == "_hidden":
+            continue
+        if k in seen:
+            seen[k]["qty"] += 1
+            continue
+        if p["bom"].startswith("("):
+            continue
+        r = dict(bom=p["bom"], qty=1, mfr=p["mfr"], pn=p["pn"], status=p["status"], src=p["src"], notes=p["notes"])
+        seen[k] = r
+        rows.append(r)
+    return rows
+
+
+def build_freecad(parts, meta):
+    import FreeCAD as App
+    import Part
+
+    V = App.Vector
+    doc = App.ActiveDocument
+    if doc is None or doc.Name != "AGRI_GRID_V2":
+        doc = App.newDocument("AGRI_GRID_V2")
+    else:
+        _read_params_from_sheet(doc)
+        parts, meta = build_parts(P)
+        keep = ("Params", "BOM")
+        for o in list(doc.Objects):
+            if o.Name not in keep:
+                try:
+                    doc.removeObject(o.Name)
+                except Exception:
+                    pass
+    _write_params_sheet(doc)
+    _write_bom_sheet(doc, bom_rows(parts))
+
+    root = doc.addObject("App::Part", "AGRI_GRID_V2_Master")
+    groups = {}
+
+    def grp(name):
+        if name not in groups:
+            g = doc.addObject("App::Part", name)
+            root.addObject(g)
+            groups[name] = g
+        return groups[name]
+
+    def apply_rots(obj, spec):
+        for axis, deg, pivot in spec.get("rot", []):
+            r = App.Placement(V(0, 0, 0), App.Rotation(V(*axis), deg), V(*pivot))
+            obj.Placement = r.multiply(obj.Placement)
+
+    def axis_rot(d):
+        return App.Rotation(V(0, 0, 1), V(*d))
+
+    def shape_of(s):
+        k = s["kind"]
+        if k == "box":
+            return Part.makeBox(s["size"][0], s["size"][1], s["size"][2], V(*s["p0"]))
+        if k == "cyl":
+            return Part.makeCylinder(s["r"], s["h"], V(*s["base"]), V(*s["dir"]))
+        if k == "cone":
+            return Part.makeCone(s["r1"], s["r2"], s["h"], V(*s["base"]), V(*s["dir"]))
+        if k == "tube":
+            o = Part.makeCylinder(s["ro"], s["h"], V(*s["base"]), V(*s["dir"]))
+            return o.cut(Part.makeCylinder(s["ri"], s["h"], V(*s["base"]), V(*s["dir"])))
+        if k == "ringcone":
+            o = Part.makeCone(s["ro1"], s["ro2"], s["h"], V(*s["base"]), V(*s["dir"]))
+            return o.cut(Part.makeCylinder(s["ri"], s["h"], V(*s["base"]), V(*s["dir"])))
+        if k == "tray":
+            (x0, y0, z0), (sx, sy, sz), t = s["p0"], s["size"], s["t"]
+            outer = Part.makeBox(sx, sy, sz, V(x0, y0, z0))
+            ix, iy, iz, isx, isy, isz = x0 + t, y0 + t, z0 + t, sx - 2 * t, sy - 2 * t, sz - 2 * t
+            ax, sgn = s["open"][1], s["open"][0]
+            if ax == "x":
+                isx = sx - t; ix = x0 + (t if sgn == "+" else 0)
+            if ax == "y":
+                isy = sy - t; iy = y0 + (t if sgn == "+" else 0)
+            if ax == "z":
+                isz = sz - t; iz = z0 + (t if sgn == "+" else 0)
+            return outer.cut(Part.makeBox(isx, isy, isz, V(ix, iy, iz)))
+        if k == "cable":
+            pts = [V(*p) for p in s["pts"]]
+            sh = None
+            for a, b in zip(pts[:-1], pts[1:]):
+                d = b - a
+                if d.Length < 1e-6:
+                    continue
+                c = Part.makeCylinder(s["r"], d.Length, a, d)
+                sh = c if sh is None else sh.fuse(c)
+            for p in pts[1:-1]:
+                sh = sh.fuse(Part.makeSphere(s["r"], p))
+            return sh.removeSplitter()
+        raise ValueError(k)
+
+    made = 0
+    for s in parts:
+        try:
+            simple = not s.get("holes") and not s.get("slots")
+            if s["kind"] == "box" and simple:
+                o = doc.addObject("Part::Box", s["name"])
+                o.Length, o.Width, o.Height = s["size"]
+                o.Placement = App.Placement(V(*s["p0"]), App.Rotation())
+            elif s["kind"] == "cyl" and simple:
+                o = doc.addObject("Part::Cylinder", s["name"])
+                o.Radius, o.Height = s["r"], s["h"]
+                o.Placement = App.Placement(V(*s["base"]), axis_rot(s["dir"]))
+            elif s["kind"] == "cone" and simple:
+                o = doc.addObject("Part::Cone", s["name"])
+                o.Radius1, o.Radius2, o.Height = s["r1"], max(s["r2"], 0.01), s["h"]
+                o.Placement = App.Placement(V(*s["base"]), axis_rot(s["dir"]))
+            else:
+                sh = shape_of(s)
+                for (c, d, r, depth) in s.get("holes", []):
+                    dv = V(*d); dv.normalize()
+                    base = V(*c) - dv * (depth / 2.0)
+                    sh = sh.cut(Part.makeCylinder(r, depth, base, dv))
+                for (p0, size) in s.get("slots", []):
+                    sh = sh.cut(Part.makeBox(size[0], size[1], size[2], V(*p0)))
+                o = doc.addObject("Part::Feature", s["name"])
+                o.Shape = sh
+            apply_rots(o, s)
+            o.Label = s["name"]
+            for prop, key in (("Manufacturer", "mfr"), ("PartNumber", "pn"), ("Status", "status"),
+                              ("Source", "src"), ("Notes", "notes"), ("BOM_Item", "bom")):
+                o.addProperty("App::PropertyString", prop, "AGRI_GRID", "")
+                setattr(o, prop, str(s[key]))
+            grp(s["group"]).addObject(o)
+            if App.GuiUp:
+                vo = o.ViewObject
+                vo.ShapeColor = s["color"]
+                if s["status"] == "REFERENCE" and s["kind"] != "cable":
+                    vo.Transparency = 80
+                if "Cover" in s["name"] and "Screw" not in s["name"] and "Clearance" not in s["name"]:
+                    vo.Transparency = 55
+                if s["name"].startswith("REF_Lid") or s["name"].startswith("REF_Cover"):
+                    vo.Visibility = False
+            made += 1
+        except Exception as e:  # log, never silently skip
+            App.Console.PrintError("AGRI-GRID: failed %s: %s\n" % (s["name"], e))
+    doc.recompute()
+    if App.GuiUp:
+        import FreeCADGui as Gui
+        Gui.activeDocument().activeView().viewIsometric()
+        Gui.SendMsgToActiveView("ViewFit")
+    App.Console.PrintMessage("AGRI-GRID V2: built %d of %d parts. Edit 'Params' and re-run to rebuild.\n"
+                             % (made, len(parts)))
+    return doc
+
+
+try:
+    import FreeCAD  # noqa: F401
+    _HAS_FC = True
+except ImportError:
+    _HAS_FC = False
+if _HAS_FC:
+    _parts, _meta = build_parts(P)
+    build_freecad(_parts, _meta)

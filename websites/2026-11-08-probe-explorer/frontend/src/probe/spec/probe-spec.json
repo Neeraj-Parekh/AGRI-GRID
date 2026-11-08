@@ -1,0 +1,79 @@
+{
+  "_doc": "AGRI-GRID dielectric profile probe: design of record. Units mm. Z = 0 at the soil surface, + up. Every 3D part, test and spec card reads this file. Change it only with the team's sign-off (see PROBE.md).",
+  "version": "2026-11-07",
+  "P1": {
+    "label": "P1 hero probe (node A1)",
+    "tube": { "od": 25.0, "wall": 1.6, "wallTol": 0.1, "id": 21.8, "zTop": 140, "zBottom": -210 },
+    "tip": { "zTop": -210, "zPoint": -230, "pointRadius": 1.5, "plugOd": 21.4, "plugLength": 10 },
+    "seam": { "tongue": [1.0, 1.0], "groove": [1.2, 1.2], "sealant": "epoxy" },
+    "sections": { "lower": [-210, 10], "upper": [10, 140], "splitIfBedBelow": 235 },
+    "coupler": { "od": 21.4, "wall": 2.0, "length": 30, "wireSlot": 6, "zCentre": 10 },
+    "pocketDepth": 0.15,
+    "bandArcDeg": 120,
+    "bands": [
+      { "id": "E1", "zc": -25, "h": 10, "depth": "0–5 cm", "note": "C-band SAR depth" },
+      { "id": "E2", "zc": -75, "h": 10, "depth": "5–10 cm" },
+      { "id": "E3", "zc": -125, "h": 10, "depth": "10–15 cm" },
+      { "id": "E4", "zc": -175, "h": 10, "depth": "15–20 cm", "note": "AWD line" }
+    ],
+    "guard": { "h": 4, "from": 9, "to": 13 },
+    "ew": { "width": 6, "z0": -5, "z1": 100 },
+    "ewGnd": { "width": 3, "gap": 4 },
+    "ribs": { "height": 1.0, "spacing": 4, "width": 1.0 },
+    "ds18b20": { "z": -100, "diameter": 6, "length": 50 },
+    "soilGroove": { "width": 0.5, "depth": 0.4, "z": 0 },
+    "ticks": { "raised": 0.4, "z0": 0, "z1": 100, "longEvery": 10, "shortEvery": 5 },
+    "paintWhiteAbove": 0,
+    "cap": { "od": 32, "height": 30, "socketDepth": 15, "socketId": 25.4, "chamberId": 18, "chamberHeight": 10, "glandHole": 12.5 },
+    "eref": { "size": [10, 10] },
+    "gland": { "type": "PG7", "thread": 12.5, "hexAF": 15, "cableOd": 5.0 },
+    "conductors": ["E1", "E2", "E3", "E4", "EW", "GND", "DS-VDD", "DS-DQ", "EREF"],
+    "cable": { "pins": 11, "maxLeadMm": 400 }
+  },
+  "P2": {
+    "label": "P2 mini probe (field nodes B2, C3, D4)",
+    "tube": { "od": 25.0, "wall": 1.6, "id": 21.8, "zTop": 100, "zBottom": -110 },
+    "tip": { "zTop": -110, "zPoint": -130, "pointRadius": 1.5, "plugOd": 21.4, "plugLength": 10 },
+    "ew": { "width": 6, "z0": -5, "z1": 80 },
+    "bands": [{ "id": "ES", "zc": -75, "h": 10, "depth": "5–10 cm" }],
+    "conductors": ["EW", "ES", "GND"]
+  },
+  "P3": { "label": "P3 cutaway display probe", "stand": { "base": [220, 60, 5], "saddleId": 25.4, "saddleAt": [40, 180], "angleDeg": 15 }, "labelDepth": 0.6, "labelHeight": 5 },
+  "P4": { "label": "P4 test stub", "length": 60 },
+  "N1": {
+    "label": "N1 node box",
+    "inner": [110, 130, 55], "wall": 2.4, "floor": 3.0, "lid": 3.0, "cornerR": 4,
+    "boss": { "d": 9, "hole": 4.0, "holeDepth": 5.5 },
+    "gasket": [2.2, 1.5],
+    "standoffs": { "d": 6, "h": 25, "hole": 2.5, "pattern": [65, 85] },
+    "battery": [80, 25],
+    "glands": { "probe": 12.5, "spare": 8 },
+    "clips": { "stakeD": 20, "id": 20.5, "wall": 4, "opening": 14, "h": 15, "at": [30, 100] },
+    "text": { "id": 18, "brand": 6, "raised": 0.8 },
+    "solar": { "tiltDeg": 20, "panel": [110, 70] }
+  },
+  "G1": { "bar": [280, 30, 4], "range": [-150, 100], "long": [12, 1.2, 10], "short": [8, 0.8, 5], "numbersEvery": 20, "numberH": 6, "engrave": 0.6 },
+  "C1": { "deep": 25, "wide": 30, "arm": 30, "probeRing": [25.4, 15], "gaugeSlot": [30.4, 4.4] },
+  "C2": { "boreExtra": 0.3, "outletDeg": 30 },
+  "print": { "nozzle": 0.4, "layer": 0.2, "perimeters": 4, "material": "SUNLU Matte PETG", "supports": false },
+  "pins": {
+    "hero": [
+      ["E1 soil 0–5 cm", "GPIO32", "T9"], ["E2 soil 5–10 cm", "GPIO33", "T8"], ["E3 soil 10–15 cm", "GPIO27", "T7"],
+      ["E4 soil 15–20 cm", "GPIO14", "T6"], ["EW water strip", "GPIO13", "T4"], ["EREF sealed reference", "GPIO4", "T0"],
+      ["DS18B20 data", "GPIO25", "4.7 kΩ pull-up"], ["I²C SDA (SHT31, INA219)", "GPIO21", ""], ["I²C SCL", "GPIO22", ""],
+      ["Battery sense 220k/220k", "GPIO34", "ADC1"]
+    ],
+    "field": [
+      ["EW receive", "GPIO12", "D6"], ["ES receive", "GPIO13", "D7"], ["RC send, water", "GPIO14", "D5"],
+      ["RC send, soil", "GPIO15", "D8"], ["Sensor power", "GPIO5", "D1"], ["Deep-sleep wake", "GPIO16", "D0 → RST"]
+    ],
+    "gateway": [["SIM800L TXD → ESP RX", "GPIO14", ""], ["ESP TX → divider → SIM800L RXD", "GPIO15", "1 kΩ / 2 kΩ"], ["Pump relay / MOSFET", "GPIO13", "HIGH = pump on"]]
+  },
+  "physics": {
+    "epsWater": 80, "epsDrySoil": [3, 5], "epsPetg": [2.4, 3.0],
+    "topp": [-0.053, 0.0292, -0.00055, 0.0000043],
+    "awdThresholdMm": -150,
+    "probeFreqHz": 1000000,
+    "illustrativeThresholdPct": 37
+  }
+}
