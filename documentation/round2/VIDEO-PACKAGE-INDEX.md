@@ -26,8 +26,8 @@ provenance and Vercel settings; `agri-sites/start-all.sh` starts all four server
 
 | # | Site | Local URL | Source | Status |
 |---|---|---|---|---|
-| 1 | AGRI-GRID website, 4 Nov build | http://localhost:5173/ | `agri-grid-website-backup.zip` | story home + dashboard, logo fixed, built |
-| 2 | Probe Explorer, 8 Nov build | http://localhost:5174/probe | `AGRI-GRID-probe-explorer.zip` | newest; 13-chapter 3D probe story |
+| 1 | AGRI-GRID website + Probe Explorer, 8 Nov build | http://localhost:5173/ | `AGRI-GRID-probe-explorer.zip` | story home + dashboard + 18-chapter probe; canonical |
+| 2 | Previous build, 4 Nov | http://localhost:5174/ | `agri-grid-website-backup.zip` | rollback only, no `/probe` |
 | 3 | Yenprotek offline mirror | http://localhost:8090/en/index.html | `yenprotek-offline.zip` | reference only, **never publish** |
 | — | Landing page for all three | http://localhost:8080/ | `agri-sites/landing/` | bookmark / thumbnail source |
 
@@ -52,11 +52,11 @@ must stay labelled that way on screen.
 
 | What | Link |
 |---|---|
-| Whole story, recording frame | http://localhost:5174/probe?record=1 |
-| One chapter, paused | http://localhost:5174/probe?record=1&ch=5&t=12&paused=1 |
-| Lower GPU load | http://localhost:5174/probe?record=1&quality=low |
-| Field hardware variant | http://localhost:5174/probe?record=1&variant=field |
-| Marathi interface | http://localhost:5174/probe?record=1&lang=mr |
+| Whole story, recording frame | http://localhost:5173/probe?record=1 |
+| One chapter, paused | http://localhost:5173/probe?record=1&ch=5&t=12&paused=1 |
+| Lower GPU load | http://localhost:5173/probe?record=1&quality=low |
+| Field hardware variant | http://localhost:5173/probe?record=1&variant=field |
+| Marathi interface | http://localhost:5173/probe?record=1&lang=mr |
 
 The chapter map and recording keys are in
 `websites/2026-11-08-probe-explorer/frontend/src/probe/RECORDING.md`. The page is GPU-heavy:

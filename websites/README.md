@@ -11,14 +11,17 @@ sibling of this repo, outside git, because the Yenprotek mirror alone is 160 MB)
 
 | # | Site | Local URL | Source | Publishable? |
 |---|---|---|---|---|
-| 1 | AGRI-GRID website (4 Nov build) | http://localhost:5173/ | `agri-grid-website-backup.zip` | yes — our own React source |
-| 2 | Probe Explorer (8 Nov build) | http://localhost:5174/probe | `AGRI-GRID-probe-explorer.zip` | yes — our own React source |
+| 1 | AGRI-GRID website + Probe Explorer (8 Nov build) | http://localhost:5173/ | `AGRI-GRID-probe-explorer.zip` | yes — our own React source |
+| 2 | Previous build (4 Nov), rollback only | http://localhost:5174/ | `agri-grid-website-backup.zip` | yes — our own React source |
 | 3 | Yenprotek offline mirror | http://localhost:8090/en/index.html | `yenprotek-offline.zip` | **no** — derivative reference only |
 | — | Landing page for all three | http://localhost:8080/ | `agri-sites/landing/` | local only |
 | — | Live-mode API | http://localhost:8001/agri/fields | `agri-sites/agri-grid-probe/backend/` | yes — FastAPI, CORS open |
 
 The landing page is the bookmark to give someone: it links to the story home, the dashboard,
-the probe chapters and the mirror.
+the probe chapters and the mirror. Port **5173 is the canonical site**: it is the newest build
+and the one the video script's `/probe?record=1` links assume. Port 5174 serves the previous
+4 Nov build only as a rollback.
+
 
 ### Why the Yenprotek mirror must stay local
 
@@ -60,7 +63,7 @@ GitHub Pages at `/AGRI-GRID/`, which is what the existing deploy workflow does.
 | Route | What it shows |
 |---|---|
 | `/` | story home, live 3D field, day/night switch |
-| `/probe` | 13-chapter 3D story of the probe |
+| `/probe` | 18-chapter 3D story of the probe |
 | `/probe?record=1` | fixed 1920×1080 recording frame, HUD on |
 | `/probe?record=1&ch=5&t=12&paused=1` | one chapter paused on a chosen second |
 | `/probe?record=1&quality=low` | lower GPU load while recording |
@@ -73,8 +76,8 @@ links are there.
 ## The 4 Nov build
 
 Source: `agri-grid-website-backup.zip` (sha256 `7b0ade0f…957d`, 15 MB, excludes node_modules).
-It is the same app without `src/probe/`, and is kept as a rollback point. It is deployed at
-http://localhost:5173/ from the extracted copy in `../../agri-sites/agri-grid-current/`.
+It is the same app without `src/probe/`, and is kept as a rollback point. It is served at
+http://localhost:5174/ from the extracted copy in `../../agri-sites/agri-grid-current/`.
 
 ## Vercel
 
@@ -97,7 +100,7 @@ Vercel project at the 4 Nov build instead.
 
 ```bash
 cd /mnt/20265E15265DEC72/study/CODE/HACKATHON/agri-sites
-./start-all.sh      # landing 8080 · AGRI-GRID 5173 · probe 5174 · yenprotek 8090 · API 8001
+./start-all.sh      # landing 8080 · newest site 5173 · previous build 5174 · yenprotek 8090 · API 8001
 ./stop-all.sh
 tail -f run/*.log
 ```

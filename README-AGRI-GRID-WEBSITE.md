@@ -8,8 +8,8 @@ Three sites are already built and served; `agri-sites/start-all.sh` starts them 
 | Site | URL |
 |---|---|
 | Landing page for all three | http://localhost:8080/ |
-| AGRI-GRID website, 4 Nov build | http://localhost:5173/ (dashboard at `/dashboard`) |
-| Probe Explorer, 8 Nov build | http://localhost:5174/probe |
+| AGRI-GRID website, newest build (8 Nov) | http://localhost:5173/ (dashboard `/dashboard`, probe `/probe`) |
+| Previous build (4 Nov), rollback only | http://localhost:5174/ |
 | Yenprotek reference mirror (never publish) | http://localhost:8090/en/index.html |
 
 Full inventory, provenance and the Vercel settings are in `websites/README.md`. The sections

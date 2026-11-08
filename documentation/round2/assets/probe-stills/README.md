@@ -1,7 +1,7 @@
 # Probe Explorer stills (1920 × 1080)
 
 Nine paused frames captured from the live Probe Explorer at
-`http://localhost:5174/probe?record=1&…&paused=1`, rendered by Chrome on the laptop GPU
+`http://localhost:5173/probe?record=1&…&paused=1`, rendered by Chrome on the laptop GPU
 (not SwiftShader). Each frame is a pure function of the timeline, so the same link reproduces
 the same picture.
 
