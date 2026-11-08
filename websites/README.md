@@ -15,6 +15,7 @@ sibling of this repo, outside git, because the Yenprotek mirror alone is 160 MB)
 | 2 | Probe Explorer (8 Nov build) | http://localhost:5174/probe | `AGRI-GRID-probe-explorer.zip` | yes — our own React source |
 | 3 | Yenprotek offline mirror | http://localhost:8090/en/index.html | `yenprotek-offline.zip` | **no** — derivative reference only |
 | — | Landing page for all three | http://localhost:8080/ | `agri-sites/landing/` | local only |
+| — | Live-mode API | http://localhost:8001/agri/fields | `agri-sites/agri-grid-probe/backend/` | yes — FastAPI, CORS open |
 
 The landing page is the bookmark to give someone: it links to the story home, the dashboard,
 the probe chapters and the mirror.
@@ -96,7 +97,7 @@ Vercel project at the 4 Nov build instead.
 
 ```bash
 cd /mnt/20265E15265DEC72/study/CODE/HACKATHON/agri-sites
-./start-all.sh      # landing 8080 · AGRI-GRID 5173 · probe 5174 · yenprotek 8090
+./start-all.sh      # landing 8080 · AGRI-GRID 5173 · probe 5174 · yenprotek 8090 · API 8001
 ./stop-all.sh
 tail -f run/*.log
 ```

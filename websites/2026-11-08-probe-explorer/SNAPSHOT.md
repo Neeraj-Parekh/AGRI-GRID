@@ -24,7 +24,8 @@ different project and were removed from this copy to keep the commit small:
 
 - root research/planning Markdown that already exists in the main repo,
 - `ppt/` (JAL-SURAKSHA decks, not AGRI-GRID),
-- `review/` (review screenshots),
+- `review/` (review screenshots; only `review/probe/probe-scenes-preview.jpg` was restored as
+  a shot-selection contact sheet),
 - `documentation/` subfolders other than `probe-sources`,
 - `.github/`, `.autoresearch/`, `.obsidian/`,
 - `node_modules/` and `dist/` (never committed).

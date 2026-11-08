@@ -1,5 +1,20 @@
 # AGRI-GRID website — run guide
 
+## Deployed on this laptop (8 Nov 2026)
+
+Three sites are already built and served; `agri-sites/start-all.sh` starts them and the
+`agri-sites` systemd user unit restarts them at login.
+
+| Site | URL |
+|---|---|
+| Landing page for all three | http://localhost:8080/ |
+| AGRI-GRID website, 4 Nov build | http://localhost:5173/ (dashboard at `/dashboard`) |
+| Probe Explorer, 8 Nov build | http://localhost:5174/probe |
+| Yenprotek reference mirror (never publish) | http://localhost:8090/en/index.html |
+
+Full inventory, provenance and the Vercel settings are in `websites/README.md`. The sections
+below describe running the source in `frontend/` by hand.
+
 ## Frontend (full product, Demo + Live)
 ```
 cd frontend
