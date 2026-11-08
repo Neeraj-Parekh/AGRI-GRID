@@ -24,6 +24,7 @@ against **v2**.
 | Transitions | hard cuts only | hard cuts inside a beat, 0.16 s dip to black at act boundaries |
 | Cards motion | held still | 1.8 s entrance, then a settled hold |
 | Progress | none | continuous bottom bar, one brand accent |
+| Chrome / captures | film chrome over every still; dashboards run under the band | Explorer and deck frames carry no film chrome; dashboard captures are fitted above the caption band; master is tagged BT.709 / TV range with faststart |
 | Build sheet / circuit | plain image cards | real document pages with three labelled takeaways |
 
 The full design system, data rules and borrowed-pattern notes are in `DESIGN.md`.

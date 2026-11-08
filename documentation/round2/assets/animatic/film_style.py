@@ -272,7 +272,7 @@ def dot_grid(im, step=48, color=(0, 0, 0), alpha=10):
 
 def paper_base(tint=PAPER):
     im = Image.new("RGB", (W, H), tint)
-    return add_paper_grain(im, 0.028)
+    return add_paper_grain(im, 0.06)
 
 
 def dark_base(tint=FOREST):
@@ -303,8 +303,8 @@ def photo_chrome_layer(t, total, chapter, screen=False, watermark=True):
         tracked(d, (64, 44), "AGRI-GRID", font("mono_b", 18), (255, 255, 255, 205), 4.0)
         tracked(d, (64, 72), chapter.upper(), font("mono", 15), (255, 255, 255, 135), 2.6)
         if watermark:
-            tracked(d, (W - 64 - tracked_width(d, "ANIMATIC · SCRATCH", font("mono", 14), 2.4), 48),
-                    "ANIMATIC · SCRATCH", font("mono", 14), (255, 255, 255, 115), 2.4)
+            tracked(d, (W - 64 - tracked_width(d, "ANIMATIC · V2", font("mono", 14), 2.4), 48),
+                    "ANIMATIC · V2", font("mono", 14), (255, 255, 255, 115), 2.4)
     return layer
 
 

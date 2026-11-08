@@ -51,10 +51,11 @@ QC = "/mnt/20265E15265DEC72/study/CODE/linux_venv/bin/python"
 # ------------------------------------------------------------------ segments
 def S(a, b, kind, label, accent, src=None, vo=None, sub=None, source=None,
       render=None, band=False, paper=True, caption=None, caption_y=None,
-      ss=0.0, screen=False, note=None):
+      ss=0.0, screen=False, note=None, fit=False):
     return dict(a=a, b=b, kind=kind, label=label, accent=accent, src=str(src) if src else None,
                 vo=vo, sub=sub, source=source, render=render, band=band, paper=paper,
-                caption=caption, caption_y=caption_y, ss=ss, screen=screen, note=note)
+                caption=caption, caption_y=caption_y, ss=ss, screen=screen, note=note,
+                fit=fit)
 
 
 def card(a, b, label, accent, render, vo=None, sub=None, source=None, paper=True,
@@ -96,10 +97,10 @@ def build_segments():
 
     # ---------------------------------------------------------------- beat 1
     segs += [
-        S(0, 7, "photo", "PROBE EXPLORER · ch1 · flooded paddy", fs.GREEN,
+        S(0, 7, "screen", "PROBE EXPLORER · ch1 · flooded paddy", fs.GREEN,
           P / "probe-ch01-flooded.jpg", source="PROBE EXPLORER · CH 01",
           vo="India's rice paddies release about six and a half million tonnes of methane every year."),
-        S(7, 15, "photo", "PROBE EXPLORER · ch1 · water starts to drop", fs.GREEN,
+        S(7, 15, "screen", "PROBE EXPLORER · ch1 · water starts to drop", fs.GREEN,
           P / "probe-ch01-flooded.jpg", source="PROBE EXPLORER · CH 01",
           vo="Most of it comes from one habit: keeping fields flooded all season. The fix is already known."),
         card(15, 21, "FACE CAM · TAKE 1 · HOOK", fs.RED,
@@ -113,7 +114,7 @@ def build_segments():
 
     # ---------------------------------------------------------------- beat 2
     segs += [
-        S(25, 38, "photo", "PROBE EXPLORER · ch1 · time-lapse", fs.GREEN,
+        S(25, 38, "screen", "PROBE EXPLORER · ch1 · time-lapse", fs.GREEN,
           P / "probe-ch01-flooded.jpg", source="PROBE EXPLORER · CH 01",
           vo=("Flooded soil has no oxygen, so microbes in it make methane. IRRI's answer is "
               "alternate wetting and drying, AWD: let the water drop below the surface, then flood again.")),
@@ -122,7 +123,7 @@ def build_segments():
              vo=("It saves up to thirty percent of the water, and cuts methane by up to "
                  "forty-eight percent. India grows rice on about fifty-one million hectares, so this matters."),
              source="IRRI AWD · DA&FW 2024-25"),
-        S(50, 57, "photo", "PROBE EXPLORER · ch1 · the −15 cm rule", fs.GREEN,
+        S(50, 57, "screen", "PROBE EXPLORER · ch1 · the −15 cm rule", fs.GREEN,
           P / "probe-ch01-rule.jpg", source="PROBE EXPLORER · CH 01",
           vo="But AWD has one rule: re-irrigate when the water is fifteen centimetres below the soil."),
         card(57, 75, "CARD · THE THREE GAPS", fs.AMBER,
@@ -148,7 +149,7 @@ def build_segments():
              lambda t, d: fc.system_card(3, t, d),
              vo=("And AI that turns both into one decision for the farmer, and one record "
                  "anyone can check.")),
-        S(98, 105, "photo", "PROBE EXPLORER · ch2 · probe top-down", fs.GREEN,
+        S(98, 105, "screen", "PROBE EXPLORER · ch2 · probe top-down", fs.GREEN,
           P / "probe-ch02-xray.jpg", source="PROBE EXPLORER · CH 02",
           vo="Let me show you each piece, starting underground."),
     ]
@@ -182,7 +183,7 @@ def build_segments():
          "At minus fifteen, the node flags: irrigate."),
     ]
     for a, b, fn, label, ch, vo in beat4:
-        segs.append(S(a, b, "photo", label, fs.GREEN, P / ("probe-" + fn),
+        segs.append(S(a, b, "screen", label, fs.GREEN, P / ("probe-" + fn),
                       source="PROBE EXPLORER · " + ch, vo=vo))
 
     # ---------------------------------------------------------------- beat 5
@@ -230,22 +231,22 @@ def build_segments():
 
     # ---------------------------------------------------------------- beat 6
     segs += [
-        S(230, 242, "photo", "PROBE EXPLORER · ch9 · four nodes", fs.GREEN,
+        S(230, 242, "screen", "PROBE EXPLORER · ch9 · four nodes", fs.GREEN,
           P / "probe-ch09-leak.jpg", source="PROBE EXPLORER · CH 09",
           vo=("In the field, every node sends its readings to that gateway over ESP-NOW, "
               "the ESP32's own radio. No Wi-Fi network, and no SIM card on each node.")),
-        S(242, 252, "photo", "PROBE EXPLORER · ch9 · B2 leaking bund", fs.GREEN,
+        S(242, 252, "screen", "PROBE EXPLORER · ch9 · B2 leaking bund", fs.GREEN,
           P / "probe-ch09-leak.jpg", source="PROBE EXPLORER · CH 09",
           vo=("Here, node B2 is losing water three times faster than its neighbours. "
               "That isn't normal drying. That's a leaking bund.")),
-        S(252, 258, "photo", "PROBE EXPLORER · ch17 · phone lock screen", fs.GREEN,
+        S(252, 258, "screen", "PROBE EXPLORER · ch17 · phone lock screen", fs.GREEN,
           P / "probe-ch17-sms.jpg", source="PROBE EXPLORER · CH 17",
           vo="The farmer never sees any of the backend. He gets one SMS, in Marathi:"),
-        S(258, 264, "photo", "PROBE EXPLORER · ch17 · SMS thread", fs.GREEN,
+        S(258, 264, "screen", "PROBE EXPLORER · ch17 · SMS thread", fs.GREEN,
           P / "probe-ch17-sms.jpg", source="PROBE EXPLORER · CH 17",
           vo="शेत सुकत आहे. २–३ दिवसांत पाणी देण्याची तयारी ठेवा.",
           sub="Field is drying. Plan to irrigate in 2–3 days."),
-        S(264, 280, "photo", "PROBE EXPLORER · ch17 · app opens", fs.GREEN,
+        S(264, 280, "screen", "PROBE EXPLORER · ch17 · app opens", fs.GREEN,
           P / "probe-ch17-app.jpg", source="PROBE EXPLORER · CH 17",
           vo=("One tap opens the app: today's water level, the plan, the rain forecast, "
               "and a button to call an agronomist.")),
@@ -257,11 +258,11 @@ def build_segments():
              lambda t, d: fc.pipeline_card(t, d),
              vo="Now, where the AI does its work. Three models, each with one job.",
              source="PROBE EXPLORER · CH 17 · PIPELINE"),
-        S(286, 295, "photo", "PROBE EXPLORER · ch11 · calibration", fs.GREEN,
+        S(286, 295, "screen", "PROBE EXPLORER · ch11 · calibration", fs.GREEN,
           P / "probe-ch11-calibration.jpg", source="PROBE EXPLORER · CH 11",
           vo=("First, calibration: it turns raw counts into water content, fitted to "
               "oven-dried samples of local soil.")),
-        S(295, 305, "photo", "PROBE EXPLORER · ch9 · anomaly view", fs.GREEN,
+        S(295, 305, "screen", "PROBE EXPLORER · ch9 · anomaly view", fs.GREEN,
           P / "probe-ch09-leak.jpg", source="PROBE EXPLORER · CH 09",
           vo=("Second, anomaly detection: an Isolation Forest compares how fast each node dries. "
               "That's how B2's leak gets caught.")),
@@ -286,18 +287,18 @@ def build_segments():
     # ---------------------------------------------------------------- beat 8
     segs += [
         S(340, 350, "screen", "DASHBOARD · DEMO MODE · farm view", fs.WATER,
-          DB / "dash-overview.png", source="DASHBOARD · DEMO MODE", screen=True,
+          DB / "dash-overview.png", source="DASHBOARD · DEMO MODE", screen=True, fit=True,
           vo="All of this lands on one dashboard. This is the farm view, every field coloured by its state."),
         S(350, 362, "screen", "DASHBOARD · DEMO MODE · field MVL-01", fs.WATER,
-          DB / "field-top.png", source="DASHBOARD · DEMO MODE", screen=True,
+          DB / "field-top.png", source="DASHBOARD · DEMO MODE", screen=True, fit=True,
           vo=("Open a field and you get today's decision, the four probe bands, "
               "the water history and the SMS that went out.")),
         S(362, 372, "screen", "DASHBOARD · DEMO MODE · 48 h + 3D field", fs.WATER,
-          DB / "field-charts.png", source="DASHBOARD · DEMO MODE", screen=True,
+          DB / "field-charts.png", source="DASHBOARD · DEMO MODE", screen=True, fit=True,
           vo=("Weather comes from open data for that exact location. Field officers and "
               "farmer groups use this view; farmers just get the SMS.")),
         S(372, 380, "screen", "SITE · PROBE SECTION → EXPLORER", fs.WATER,
-          DB / "home-probe.png", source="SITE · PROBE SECTION", screen=True,
+          DB / "home-probe.png", source="SITE · PROBE SECTION", screen=True, fit=True,
           vo=("And this explorer, which you've been watching, is part of the site too: "
               "anyone can open it and learn how the probe works.")),
     ]
@@ -330,11 +331,11 @@ def build_segments():
              vo=("Our prototype setup, three field nodes and a gateway, costs about fifteen "
                  "thousand rupees."),
              source="ROUND 1 DECK · SLIDE 14 · JULY 2026 BOM"),
-        S(423, 431, "photo", "DECK VISUAL · GO TO MARKET", fs.AMBER,
+        S(423, 431, "screen", "DECK VISUAL · GO TO MARKET", fs.AMBER,
           DV / "09_slide_09_business_model_visual.jpg",
           source="DECK VISUAL · AI-GENERATED",
           vo="We start with farmer producer organisations, then KVK pilots,"),
-        S(431, 440, "photo", "DECK VISUAL · SAME PLATFORM", fs.AMBER,
+        S(431, 440, "screen", "DECK VISUAL · SAME PLATFORM", fs.AMBER,
           DV / "10_slide_10_scale_visual.jpg",
           source="DECK VISUAL · AI-GENERATED",
           vo=("then use the same records for methane-credit verification. And the platform "
@@ -424,12 +425,19 @@ def encode_still(seg, idx):
         src = graded_source(seg, idx)
         forward = idx % 2 == 0
         travel = "(t/%.4f)" % dur if forward else "(1-t/%.4f)" % dur
-        pan = ("scale=2016:1134:force_original_aspect_ratio=increase,"
+        pan = ("scale=2016:1134:force_original_aspect_ratio=increase:in_range=full:out_range=tv,"
                "crop=2016:1134,"
                "crop=1920:1080:x='(in_w-out_w)*%s':y='(in_h-out_h)/2'" % travel)
     else:
         src = Path(seg["src"])
-        pan = "scale=1920:1080"
+        if seg.get("fit"):
+            pan = ("scale=1920:908:force_original_aspect_ratio=decrease,"
+                   "pad=1920:1080:(out_w-in_w)/2:0:color=0x0B2E22")
+        elif seg["kind"] == "screen":
+            pan = ("scale=1920:1080:force_original_aspect_ratio=decrease,"
+                   "pad=1920:1080:(out_w-in_w)/2:0:color=0x0B2E22")
+        else:
+            pan = "scale=1920:1080"
 
     fc_chain = "[0:v]" + pan + ",setsar=1,fps=24[bg];"
     fc_chain += "[bg][1:v]overlay=0:0[tmp];"
@@ -446,7 +454,9 @@ def encode_still(seg, idx):
            "-loop", "1", "-framerate", str(FPS), "-t", str(dur), "-i", str(BUILD / "cover.png"),
            "-filter_complex", fc_chain, "-map", "[v]", "-t", str(dur),
            "-c:v", "libx264", "-preset", PRESET, "-crf", CRF,
-           "-pix_fmt", "yuv420p", "-r", str(FPS), str(out)]
+           "-pix_fmt", "yuv420p",
+           "-color_range", "tv", "-colorspace", "bt709",
+           "-color_primaries", "bt709", "-color_trc", "bt709", "-r", str(FPS), str(out)]
     subprocess.run(cmd, check=True)
     return out
 
@@ -472,7 +482,9 @@ def encode_clip(seg, idx):
            "-loop", "1", "-framerate", str(FPS), "-t", str(dur), "-i", str(BUILD / "cover.png"),
            "-filter_complex", fc_chain, "-map", "[v]", "-an", "-t", str(dur),
            "-c:v", "libx264", "-preset", PRESET, "-crf", CRF,
-           "-pix_fmt", "yuv420p", "-r", str(FPS), str(out)]
+           "-pix_fmt", "yuv420p",
+           "-color_range", "tv", "-colorspace", "bt709",
+           "-color_primaries", "bt709", "-color_trc", "bt709", "-r", str(FPS), str(out)]
     subprocess.run(cmd, check=True)
     return out
 
@@ -498,7 +510,9 @@ def encode_card(seg, idx):
            ",format=yuv420p[v]",
            "-map", "[v]", "-t", str(anim),
            "-c:v", "libx264", "-preset", PRESET, "-crf", CRF,
-           "-pix_fmt", "yuv420p", "-r", str(FPS), str(anim_out)]
+           "-pix_fmt", "yuv420p",
+           "-color_range", "tv", "-colorspace", "bt709",
+           "-color_primaries", "bt709", "-color_trc", "bt709", "-r", str(FPS), str(anim_out)]
 
     proc = subprocess.Popen(cmd, stdin=subprocess.PIPE)
     last = None
@@ -534,7 +548,9 @@ def encode_card(seg, idx):
            ",format=yuv420p[v]",
            "-map", "[v]", "-t", str(hold),
            "-c:v", "libx264", "-preset", PRESET, "-crf", CRF,
-           "-pix_fmt", "yuv420p", "-r", str(FPS), str(hold_out)]
+           "-pix_fmt", "yuv420p",
+           "-color_range", "tv", "-colorspace", "bt709",
+           "-color_primaries", "bt709", "-color_trc", "bt709", "-r", str(FPS), str(hold_out)]
     subprocess.run(cmd, check=True)
 
     out = SEG / ("%03d.mp4" % idx)
@@ -662,7 +678,10 @@ def main():
     concat.write_text("".join("file '%s'\n" % p for p in outs))
     video = BUILD / "AGRI-GRID-Round2-animatic-v2-1080p.mp4"
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "concat", "-safe", "0",
-                    "-i", str(concat), "-c", "copy", str(video)], check=True)
+                    "-i", str(concat), "-c", "copy",
+                    "-movflags", "+faststart", "-color_range", "tv",
+                    "-colorspace", "bt709", "-color_primaries", "bt709",
+                    "-color_trc", "bt709", str(video)], check=True)
     shutil.copy(video, HERE / "AGRI-GRID-Round2-animatic-v2-1080p.mp4")
     write_docs(segs)
     contact_sheet(video, segs)

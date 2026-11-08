@@ -130,7 +130,7 @@ def title_card(t, dur):
     a4 = appear(t, 1.05, 0.6)
     tracked(d, (84, 916), "MIT ACADEMY OF ENGINEERING · PUNE", font("mono", 16),
             (170, 190, 178, int(225 * a4)), 2.2)
-    tracked(d, (84, 948), "AGRI-GRID-CHI.VERCEL.APP", font("mono_b", 16),
+    tracked(d, (84, 946), "AGRI-GRID-CHI.VERCEL.APP", font("mono_b", 20),
             ACCENT + (int(225 * a4),), 2.2)
     tracked(d, (W - 64 - tracked_width(d, "CONCEPT VISUAL · AI-GENERATED", font("mono", 13), 1.6), H - 46),
             "CONCEPT VISUAL · AI-GENERATED", font("mono", 13), (200, 214, 204, 150), 1.6)
@@ -293,7 +293,7 @@ def pipeline_card(t, dur):
         ("MAP", "ResNet-34 U-Net on Sentinel-1.", "Water across the field, not one point.", WATER),
     ]
     x0, x1 = 300, 1580
-    y = 470
+    y = 512
     # track draws on
     draw = ease_out((t - 0.15) / 1.0)
     d.line([(x0, y), (x0 + (x1 - x0) * draw, y)], fill=(190, 198, 188), width=4)
@@ -366,7 +366,7 @@ def sar_metrics_card(t, dur):
     d = ImageDraw.Draw(im, "RGBA")
     tracked(d, (M, 176), "MEAN IoU ACROSS THE TEST SPLIT", font("mono_b", 19), GREEN, 3.0)
     val = count(t, 0.1, 1.4, 0.3817, "{:.4f}")
-    d.text((M - 6, 214), val, font=font("black", 208), fill=FOREST)
+    d.text((M - 6, 220), val, font=font("mono_b", 160), fill=FOREST)
     d.text((M, 438), "89 loaded test chips · fixed 0.50 threshold · ResNet-34 U-Net",
            font=font("regular", 26), fill=MUTED)
 
@@ -545,7 +545,8 @@ def cost_card(t, dur):
                 "ROUND 1 DECK · SLIDE 14 · JULY 2026 BOM · V2 NOT COSTED")
     d = ImageDraw.Draw(im, "RGBA")
     tracked(d, (M, 162), "THE JULY PROTOTYPE", font("mono_b", 18), GREEN, 3.0)
-    d.text((M, 192), "\u20b914,995", font=font("black", 138), fill=FOREST)
+    d.text((M, 192), "\u20b9" + count(t, 0.10, 1.1, 14995, "{:,.0f}"),
+           font=font("black", 138), fill=FOREST)
     d.text((M, 354), "for three field nodes and one gateway.", font=font("medium", 29), fill=INK)
     d.text((M, 398), "The V2 station is designed but not costed yet.", font=font("regular", 21), fill=MUTED)
 
@@ -575,7 +576,7 @@ def cost_card(t, dur):
         a = appear(t, 0.45 + i * 0.06, 0.45)
         d.rectangle([cx, cy + 4, cx + 14, cy + 18], fill=col + (int(255 * a),))
         tracked(d, (cx + 26, cy), label.upper(), font("mono_b", 14), INK + (int(255 * a),), 1.2)
-        d.text((cx + 26, cy + 28), "\u20b9{:,}".format(v), font=font("mono_b", 22), fill=col + (int(255 * a),))
+        d.text((cx + 26, cy + 28), "\u20b9{:,}".format(v), font=font("mono_b", 22), fill=INK + (int(255 * a),))
 
     a = appear(t, 0.9, 0.5)
     d.line([(M, 806), (W - M, 806)], fill=BORDER, width=2)
@@ -664,7 +665,7 @@ def end_card(t, dur):
 
     a2 = appear(t, 0.3, 0.6)
     d.text((M, 520), "Live site", font=font("mono_b", 16), fill=(150, 180, 162, int(255 * a2)))
-    d.text((M, 548), "agri-grid-chi.vercel.app", font=font("medium", 34), fill=WHITE + (int(255 * a2),))
+    d.text((M, 548), "agri-grid-chi.vercel.app", font=font("medium", 44), fill=WHITE + (int(255 * a2),))
     d.text((M, 640), "Code", font=font("mono_b", 16), fill=(150, 180, 162, int(255 * a2)))
     d.text((M, 668), "github.com/Neeraj-Parekh/AGRI-GRID", font=font("regular", 24),
            fill=(220, 232, 222, int(255 * a2)))

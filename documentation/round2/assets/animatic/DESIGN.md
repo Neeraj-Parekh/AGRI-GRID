@@ -33,7 +33,7 @@ of them is the argument, the others are support.
 
 | Role | Face | Size |
 |---|---|---|
-| Dominant figure | Inter Black | 128–208 px |
+| Dominant figure | Inter Black (copy-led) / Noto Sans Mono Bold (data-led) | 128–208 px |
 | Card title | Inter Black | 54–78 px |
 | Lead sentence | Inter Medium | 26–30 px |
 | Body / note | Inter Regular | 19–25 px |
@@ -57,7 +57,7 @@ faint dot grid and a static grain; photographs are full-bleed.
 | Card | PIL-rendered paper page. Elements arrive over 1.8 s, then the card holds. |
 | Photograph | Full-bleed, graded, 2016 × 1134 source panned to 1920 × 1080 over the shot. |
 | Document | Real build-sheet or circuit page on the left, three labelled takeaways on the right. |
-| Screen | Dashboard or Probe Explorer captured in Demo Mode; no top chrome, so the UI stays readable. |
+| Screen | Dashboard or Probe Explorer captured in Demo Mode; no top chrome, so the UI stays readable. On dashboard captures the 170 px caption band never crosses baked UI: the capture is fitted to 1920 × 908 above the band on a forest panel. Explorer frames and deck visuals run full-frame with no film chrome at all — their words ("The problem", "How it senses") are already on the picture. |
 | Face slate | Dark placeholder with the line, take number and framing note. Not a recorded take. |
 | Clip | Gateway footage, scaled and cropped, with the same lower third as the stills. |
 
@@ -148,7 +148,9 @@ build_film.py
   └─ concat          → 455.0 s, 10,920 frames, 1920×1080, 24 fps
 ```
 
-Output: `AGRI-GRID-Round2-animatic-v2-1080p.mp4`, silent, 25 MB, H.264, `yuv420p`.
+Output: `AGRI-GRID-Round2-animatic-v2-1080p.mp4`, silent, 26 MB, H.264, `yuv420p`, BT.709
+colour matrix, TV range, `+faststart`. The master carries one consistent stream tag, so
+QuickTime-class players render the cards the same as VLC does.
 The contact sheet is `AGRI-GRID-Round2-animatic-v2-contact-sheet.png`; it samples 25 key frames
 from the finished file.
 
