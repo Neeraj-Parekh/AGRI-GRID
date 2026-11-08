@@ -72,10 +72,10 @@ Headful Chrome on the laptop GPU renders the 1920 × 1080 frame with no console 
 
 | Time | Visual tag | Local source | Status |
 |---|---|---|---|
-| 3:15 | FACE, 2 s | you with the box | USER |
-| 3:18 | HW exterior → lid → internals, power off | your hardware video | USER |
-| 3:30 | HW power on, LEDs, 4 s | your hardware video | USER |
-| 3:36 | BUILD-SHEET 2 s → CIRCUIT 2 s → PX ch14 t=6–12 | `assets/prototype-circuits/AGRI_GRID_Prototype_Build_Sheet.pdf`; `assets/prototype-circuits/png/hero.png`; `ch=14` · `probe-ch14-circuit.jpg` | READY + RECORD |
+| 3:15 | FACE, 2 s | you with the box | USER (face cam not recorded yet) |
+| 3:18 | HW exterior → lid → internals, power off | `assets/hardware/gateway-electronics-1080p.mp4` 0:00–0:03, then `gateway-internals-closeup.mp4` 0:00–0:05 | READY clip |
+| 3:30 | HW power on, LEDs, 4 s | `gateway-electronics-1080p.mp4` 0:00–0:04 (green LED) | READY clip |
+| 3:36 | BUILD-SHEET 2 s → CIRCUIT 2 s → PX ch14 t=6–12 | `assets/prototype-circuits/AGRI_GRID_Prototype_Build_Sheet.pdf`; `assets/prototype-circuits/png/hero.png`; `assets/hardware/esp32-bench-wiring-1.jpg`; `ch=14` · `probe-ch14-circuit.jpg` | READY + RECORD |
 
 ## Beat 6 · The grid and the farmer · 3:50–4:40
 
@@ -94,8 +94,8 @@ Headful Chrome on the laptop GPU renders the 1920 × 1080 frame with no console 
 | 4:40 | PX ch17 t=4–18, crop left half | `ch=17` | RECORD |
 | 4:46 | PX ch11 t=20–28 | `ch=11` · still `probe-ch11-calibration.jpg` | RECORD / READY still |
 | 4:55 | DASH anomaly/evidence, or PX ch9 t=10–13 | `http://localhost:5173/dashboard` and `/evidence`; alt `ch=9` | RECORD |
-| 5:05 | SAR input → prediction → ground truth | **not in repo**; export from the SAR model run | USER / GAP |
-| 5:17 | SAR metrics card, mIoU 0.38 | make the card from the model result | USER + MAKE |
+| 5:05 | SAR input → prediction → ground truth | `assets/sar/sar-triptych-1920x1080.png`; separate panels `sar-panel-vv.jpg`, `sar-panel-pred.jpg`, `sar-panel-gt.jpg` | READY |
+| 5:17 | SAR metrics card, mIoU 0.38 | `assets/sar/sar-metrics-card-1920x1080.png` | READY |
 | 5:25 | DECK s08 bottom half | `deck-visuals/08_slide_08_evidence_visual.jpg` | READY background |
 
 ## Beat 8 · The dashboard · 5:40–6:20
@@ -135,19 +135,20 @@ empty prototype and would overclaim.
 
 ## What is still missing
 
-1. **Hardware video** — not on this machine. The face-cam gap is partly covered: eight
-   1920 × 1080 takes from 16 Oct are in `~/Videos/Camera/` (mono audio, generic talking-head;
-   check whether they match the hook, bench line and close before using them). The gateway
-   box shots still need your phone/disk footage.
-2. **SAR input / prediction / ground-truth chips and the metrics card** — no U-Net output image
-   exists in the repo. The 0.3817 mIoU is documented in `AUDIT-BACKEND-SAR.md` and
-   `LOGIC-NARRATIVE.md` but the model tree is external. Export three same-size chips from the
-   model run and state the test-chip count next to mIoU 0.38. Do not substitute the terrain
-   paper's 0.524 figures or its chips.
-3. **Text and diagram cards** — the Beat 3 diagram, the Beat 9 honesty card, the metric card and
-   the `LIVE` / `DEMO` / `CAD` / `AI visual` / `NOT YET BUILT` labels are edit work. The Round 1
+1. **Face cam and voice** — you are recording these. The eight 16 Oct takes in
+   `~/Videos/Camera/` are generic talking-head b-roll, not script takes. Everything else for
+   the hardware beat is in `assets/hardware/`: the gateway clip, the internals close-up, the
+   LED shot and the ESP32 bench stills.
+2. **Text and diagram cards** — the Beat 3 diagram, the Beat 9 honesty card and the
+   `LIVE` / `DEMO` / `CAD` / `AI visual` / `NOT YET BUILT` labels are edit work. The Round 1
    deck text layer is now present in `assets/round1-deck/`, so the `[DECK sNN]` slides no longer
    block the edit.
+
+**Resolved since the first pass:** the SAR triptych and the 0.3817 card were generated on
+8 Nov from the real checkpoint, not a mock-up — see `assets/sar/`. The triptych is one
+Sen1Floods11 official-test chip (Spain) with per-chip IoU 0.61. The 0.3817 card stays separate
+because it is the 89-chip mean, and the card says so. The terrain paper's 0.524 figures and its
+chips are not used.
 
 **Not missing:** `surat.jpg` is not needed. This script does not use chapter 16, the only
 chapter that reads it. Chapter 10 (SAR pass) is also unused; the script's space beat uses the

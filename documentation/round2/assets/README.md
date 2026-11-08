@@ -83,6 +83,21 @@ exact timestamps the 7:35 script asks for; the rest cover chapters 1, 2, 3, 5, 7
 of the image and are meant to stay on screen. `ch10` still uses the labelled synthetic SAR pass;
 the 7:35 script does not use it.
 
+## `sar/`
+
+The one real model result in the video. `sar-triptych-1920x1080.png` is a single Sen1Floods11
+official-test chip (Spain) run through the actual checkpoint: VV input, U-Net prediction, hand
+label, per-chip IoU 0.61. `sar-metrics-card-1920x1080.png` is the separate 89-chip mean,
+**0.3817**. `make_triptych.py` regenerates both. The model is a flood-water U-Net, not a paddy
+classifier; see the README in that folder for the exact caveats and checkpoint hash.
+
+## `hardware/`
+
+The 7 Nov gateway-prototype clip, trimmed to a 1920 × 1080 canvas, plus an internals close-up
+and four stills. The source is a 33 s portrait phone clip; the video is 14 MB, the close-up is
+6 MB. See its README for exact cut points into the script's 3:15–3:36 hardware beat. The box
+is the clear IP65 gateway with an IOTPS-Mini supply, not the V2 Fibox station.
+
 ## `round1-deck/`
 
 The recovered Round 1 submission deck, UTKARSH 1.0, 18 slides. `AGRI-GRID-UTKARSH-deck.pptx`
