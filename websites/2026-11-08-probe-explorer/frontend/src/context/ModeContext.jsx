@@ -3,7 +3,15 @@ import { FIELDS, NODES } from '../data/demo.js';
 import { SiteCtx } from './SiteContext.jsx';
 
 const Ctx = createContext(null);
-const API = () => import.meta.env.VITE_AGRI_API || 'http://localhost:8001';
+// Loopback pages must use the IPv4 literal: the API binds 0.0.0.0, and some
+// browsers try "localhost" over IPv6 (::1) first, which the API does not answer.
+// On a phone the site is served from the laptop's LAN IP, so port 8001 follows it.
+export function apiBase(){
+  const h = window.location.hostname;
+  const host = (!h || h === 'localhost' || h === '::1' || h === '[::1]') ? '127.0.0.1' : h;
+  return `http://${host}:8001`;
+}
+const API = () => import.meta.env.VITE_AGRI_API || apiBase();
 
 async function get(path, ms=3500){
   const r = await fetch(`${API()}${path}`, { signal: AbortSignal.timeout(ms) });

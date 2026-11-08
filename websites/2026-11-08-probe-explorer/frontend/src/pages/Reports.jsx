@@ -1,5 +1,6 @@
 import { ALERTS, EVIDENCE } from '../data/demo.js';
 import { useSite } from '../context/SiteContext.jsx';
+import { apiBase } from '../context/ModeContext.jsx';
 export default function Reports(){
   const { farm, site } = useSite();
   const print = ()=> window.print();
@@ -19,5 +20,5 @@ export default function Reports(){
   <div style={{display:'flex',gap:10}}><button className="btn" onClick={print}>View / Print Report</button><button className="btn ghost" onClick={dl}>Download JSON</button></div></div></>);
 }
 export function Settings(){
-  return (<><h1 className="page-title">Settings</h1><p className="page-sub">Environment + thresholds (demo).</p><div className="card"><p>API base: <code className="inline">{import.meta.env.VITE_AGRI_API || 'http://localhost:8001'}</code> — set <code className="inline">VITE_AGRI_API</code> for deploy.</p><p>Thresholds: water-stress &lt;2 cm alert, &lt;3.5 cm watch; temp &gt;31°C info; gap &gt;30 min warn.</p></div></>);
+  return (<><h1 className="page-title">Settings</h1><p className="page-sub">Environment + thresholds (demo).</p><div className="card"><p>API base: <code className="inline">{import.meta.env.VITE_AGRI_API || apiBase()}</code> — set <code className="inline">VITE_AGRI_API</code> for deploy.</p><p>Thresholds: water-stress &lt;2 cm alert, &lt;3.5 cm watch; temp &gt;31°C info; gap &gt;30 min warn.</p></div></>);
 }
