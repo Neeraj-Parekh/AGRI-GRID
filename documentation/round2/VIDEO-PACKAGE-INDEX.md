@@ -96,6 +96,7 @@ box: there isn't one yet.
 | Transcript asset map | `documentation/round2/V2-TRANSCRIPT-ASSET-MAP.md` | 43 named assets: 21 present, 22 missing, pull order |
 | Manufacturer resources | `documentation/round2/assets/v2-manufacturer-resources.zip` | Fibox/ESP32/EBYTE/Genasun/DFRobot source CAD and datasheets |
 | Probe scene contact sheet | `websites/2026-11-08-probe-explorer/review/probe/probe-scenes-preview.jpg` | 1990 × 1604 sheet of the probe chapters, for shot selection |
+| Probe stills, 1080p | `documentation/round2/assets/probe-stills/` | nine paused frames, reproducible links in its README |
 
 ## 5. Missing before the edit
 

@@ -74,6 +74,14 @@ Use this pack only to substantiate a CAD claim on camera. Its `00_README/README.
 records the design holds: the WAAREE panel has two incompatible size listings, the EBYTE
 module is solder-down, and the Fibox IP rating does not survive drilling for glands.
 
+## `probe-stills/`
+
+Nine 1920 × 1080 paused frames from the Probe Explorer, captured with the laptop GPU and the
+same `?ch=&t=&paused=1` links an editor can reproduce. They cover chapters 1, 2, 3, 5, 7, 8,
+10, 14 and 17. The frame labels (`Design render`, `Simulated data`, `Illustration`) are part of
+the image and are meant to stay on screen. `ch10` still uses the labelled synthetic SAR pass
+until `surat.jpg` is supplied.
+
 ## Provenance
 
 | Pack | From | sha256 (archive) |
