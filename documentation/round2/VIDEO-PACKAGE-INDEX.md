@@ -88,11 +88,13 @@ box: there isn't one yet.
 | Deck prompt | `AGRI-GRID-PPT-PROMPT.md` | a prompt for a deck, **not a deck** |
 | Deck | — | **missing**: there is no AGRI-GRID .pptx in the repo |
 | One-page site mock | `claude/AGRI-GRID V2 Field Station (1).html` | static single-page mock |
-| Build sheet | `claude/AGRI_GRID_Prototype_Build_Sheet (5).pdf` | wiring, pin map, probe geometry, 8 pages |
+| Build sheet | `claude/AGRI_GRID_Prototype_Build_Sheet (5).pdf` | wiring, pin map, probe geometry, 10 pages |
 | Build-sheet source | `documentation/round2/assets/prototype-circuits/` | `diagrams.py` + PNG/SVG of probe, field, hero, perfboard, gateway, system |
 | Perfboard layout | `claude/perfboard (5).png` / `documentation/round2/assets/prototype-circuits/png/perfboard.png` | 70 × 90 board layout |
 | Hero diagram | `claude/hero (5).png` / `documentation/round2/assets/prototype-circuits/png/hero.png` | probe + station hero art |
 | V2 design transcript | `documentation/round2/ClaudeAGRI_GRID_V2_transcript.txt` | the Claude CAD conversation, for provenance |
+| Transcript asset map | `documentation/round2/V2-TRANSCRIPT-ASSET-MAP.md` | 43 named assets: 20 present, 23 missing, pull order |
+| Probe scene contact sheet | `websites/2026-11-08-probe-explorer/review/probe/probe-scenes-preview.jpg` | 1990 × 1604 sheet of the probe chapters, for shot selection |
 
 ## 5. Missing before the edit
 
